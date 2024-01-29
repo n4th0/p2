@@ -114,7 +114,6 @@ int main()
   cout << "posMaxMultFive({2,3,8,17,24,8},6) = " << posMaxMultFive(v4,6) << endl;
   cout << "posMaxMultFive({3,7,8,50,3,2},6) = " << posMaxMultFive(v5,6) << endl;
 
-/*
   cout << "------------------------------------------------------------" << endl;
 
   // Ejercicio 7: Borrar caracteres
@@ -139,6 +138,7 @@ int main()
   cout << "deleteChar(\"" << hola2 << "\",'o'), hola=\"";
   deleteChar(hola2,'o');
   cout << hola2 << "\"" << endl;
+/*
 */
   return 0;
 }
