@@ -151,17 +151,15 @@ int posMaxMultFive(int v[], const int TAMVECTOR){
 
 void deleteChar(char str[], char c){
     int lenght = strlen(str);
+
     for (int i = 0; i<lenght; i++) {
         if (c == str[i]) {
             for (int j = i; j<lenght-1; j++) {
                 str[j] = str[j+1];
                 str[j+1] = '\0';
-                
             }
         }
     }
-
-
 }
 
 
