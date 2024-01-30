@@ -1,5 +1,6 @@
 # ficheros compilados
 *.o
+*.out
 
 # ejecutables de las prácticas de Programación 2
 prac0
