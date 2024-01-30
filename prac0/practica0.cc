@@ -65,6 +65,7 @@ int firstPrimes(int n){
 }
 
 // exercise 4
+// i fixed the error that speend to much time to calculate big numbers
 void Goldbach(int n, int &p1, int &p2){
     int aux;
 
