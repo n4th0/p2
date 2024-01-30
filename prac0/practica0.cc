@@ -40,6 +40,9 @@ bool isPrime(int p){
         if (p%i==0) {
             n++;
         }
+        if (n!=0) {
+            return false;
+        }
     }
     return n==0;
 }
@@ -70,15 +73,16 @@ void Goldbach(int n, int &p1, int &p2){
             if (isPrime(i) && isPrime(j) && j+i==n) {
                 p1 = i;
                 p2 = j;
-            }
+                if (p1>p2) {
+                    aux = p1;
+                    p1 = p2;
+                    p2 = aux;
+                }
+                return;
+                }
         }
     }
 
-    if (p1>p2) {
-        aux = p1;
-        p1 = p2;
-        p2 = aux;
-    }
 }
 
 
