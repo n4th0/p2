@@ -34,17 +34,13 @@ int printN(int number){
 
 // exercise 3
 bool isPrime(int p){
-    int n=0;
 
     for (int i = 2; i<p; i++) {
         if (p%i==0) {
-            n++;
-        }
-        if (n!=0) {
             return false;
         }
     }
-    return n==0;
+    return true;
 }
 
 int firstPrimes(int n){
