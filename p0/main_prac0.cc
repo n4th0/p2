@@ -74,9 +74,9 @@ int main()
   Goldbach(458,p1,p2);
   cout << "Goldbach(458,p1,p2) = (" << p1 << "," << p2 << ")" << endl;
 
-  // it took to much time to calculate the congeture of this number
   Goldbach(32896,p1,p2);
   cout << "Goldbach(32896,p1,p2) = (" << p1 << "," << p2 << ")" << endl;
+
 
   Goldbach(134568,p1,p2);
   cout << "Goldbach(134568,p1,p2) = (" << p1 << "," << p2 << ")" << endl;

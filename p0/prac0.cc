@@ -62,6 +62,7 @@ int firstPrimes(int n){
 
 // exercise 4
 // i fixed the error that speend to much time to calculate big numbers
+/*
 void Goldbach(int n, int &p1, int &p2){
     int aux;
 
@@ -76,7 +77,20 @@ void Goldbach(int n, int &p1, int &p2){
     }
 
 }
+*/
 
+void Goldbach(int n, int &p1, int &p2){
+    int aux;
+
+    for (int i = 2; i<n; i++) {
+        if (isPrime(i) && isPrime(n-i)) {
+            p1 = i;
+            p2 = n-i;
+            return;
+            }
+    }
+
+}
 
 // exercise 5 
 
