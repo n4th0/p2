@@ -78,6 +78,9 @@ int main()
   Goldbach(32896,p1,p2);
   cout << "Goldbach(32896,p1,p2) = (" << p1 << "," << p2 << ")" << endl;
 
+  Goldbach(134568,p1,p2);
+  cout << "Goldbach(134568,p1,p2) = (" << p1 << "," << p2 << ")" << endl;
+
   cout << "-----------------------------------------------------------" << endl;
 
   // Ejercicio 5: Búsqueda de un elemento en un vector
