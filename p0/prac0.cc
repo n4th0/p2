@@ -80,8 +80,6 @@ void Goldbach(int n, int &p1, int &p2){
 */
 
 void Goldbach(int n, int &p1, int &p2){
-    int aux;
-
     for (int i = 2; i<n; i++) {
         if (isPrime(i) && isPrime(n-i)) {
             p1 = i;
@@ -93,7 +91,6 @@ void Goldbach(int n, int &p1, int &p2){
 }
 
 // exercise 5 
-
 bool search(int v[], const int TAMVECTOR, int n){
     int aux = 0;
     for (int i = 0; i<TAMVECTOR; i++) {
@@ -126,7 +123,6 @@ int count(int v[], const int TAMVECTOR, int n){
 // exercise 5 
 // el enunciado no concuerda con los tests, dice que tiene que retornar
 // la posicion pero en los test devuelve el número, rarete (solo en el apartado a)
-
 int minOdds(int v[], const int TAMVECTOR){
     int aux = v[0];
 
@@ -171,5 +167,4 @@ void deleteChar(char str[], char c){
         }
     }
 }
-
 
