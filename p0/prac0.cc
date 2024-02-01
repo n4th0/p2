@@ -163,6 +163,7 @@ void deleteChar(char str[], char c){
             for (int j = i; j<lenght-1; j++) {
                 str[j] = str[j+1];
                 str[j+1] = '\0';
+                i--;
             }
         }
     }

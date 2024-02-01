@@ -141,7 +141,5 @@ int main()
   cout << "deleteChar(\"" << hola2 << "\",'o'), hola=\"";
   deleteChar(hola2,'o');
   cout << hola2 << "\"" << endl;
-/*
-*/
   return 0;
 }
