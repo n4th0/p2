@@ -4,7 +4,7 @@
 using namespace std;
 
 #define ERROR_TOO_MUCH_ARGS 1
-#define DEFAULT 10
+#define DEFAULT 20
 #define NFLAG "-N"
 #define LFLAG "-L"
 
