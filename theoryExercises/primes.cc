@@ -41,7 +41,7 @@ void printPrimesN(int n){
 int main(int argc, char *argv[]){
 
     if (argc>3) {
-        cout << "Error: primes [-L] [-N n]"<<endl;
+        cerr << "Error: primes [-L] [-N n]"<<endl;
         return ERROR_TOO_MUCH_ARGS;
     }
     
