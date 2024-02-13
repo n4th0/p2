@@ -75,19 +75,19 @@ int main(){
 
     nodos[1].nombre='b';
     nodos[1].vecinos=2;
-    nodos[0].array_pos=1;
+    nodos[1].array_pos=1;
     strcpy(nodos[1].conexiones, "ad");
     cout << nodos[1].conexiones<<endl;
 
     nodos[2].nombre='c';
     nodos[2].vecinos=2;
-    nodos[0].array_pos=2;
+    nodos[2].array_pos=2;
     strcpy(nodos[2].conexiones, "ad");
     cout << nodos[2].conexiones<<endl;
 
     nodos[3].nombre='d';
     nodos[3].vecinos=4;
-    nodos[0].array_pos=3;
+    nodos[3].array_pos=3;
     strcpy(nodos[3].conexiones, "bc");
     cout << nodos[3].conexiones<<endl;
 
