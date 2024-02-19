@@ -89,7 +89,9 @@ void showMenu(){
 vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     int id, indx;
     char prueba[10];
+    char auxiliar[10];
     bool exist= false;
+    Teacher a;
 
     cout <<"Enter academic year: ";
     cin.getline(prueba, 10);
@@ -120,9 +122,9 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
         return years;
     }
 
-    Teacher a;
     cout <<"Enter teacher name: ";
     cin>>a.name;
+    cin.get();
     if (a.name.empty()) {
         error(ERR_EMPTY);
         return years;
@@ -137,11 +139,18 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
 
     // falta añadir el error empty string
     cout <<"Enter nickname: ";
-    cin>>a.nickname;
+    getline(cin, a.nickname);
+
     cout <<"Enter subject: ";
-    cin>>a.subject;
-    cout <<"Enter rating: ";
-    cin>>a.rating;
+    cin.getline(a.subject, MAXSUBJECT-1);
+    
+    while (a.rating<1 || a.rating>5 || atoi(auxiliar)==0) {
+        cout <<"Enter rating: ";
+        cin.getline(auxiliar, 10);
+        if (atoi(auxiliar)!=0) {
+            a.rating = atoi(auxiliar);
+        }
+    }
 
     years[indx].listTeachers.push_back(a);
     return years;
@@ -150,64 +159,74 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
 
 vector<AcademicYear> deleteAcademicYear(vector<AcademicYear> years){
     char year[10];
-    int y, year_index=-1;
+    int y=0, year_index=-1;
     bool ye=false;
-    cout << "Enter academic year: ";
-    cin.getline(year, 10);
-    if (strlen(year)==0) {
-        error(ERR_EMPTY);
-    }
-    if(atoi(year)==0){
-        cout << "ha ocurrido un error";
-        return years;
 
-    }
-    y = atoi(year);
+    while (!ye) {
+        cout << "Enter academic year: ";
+        cin.getline(year, 10);
 
-    // busca el año (falta meter un while) TODO
-    for (unsigned i = 0; years.size(); i++) {
-        if(years[i].id==y){
-            year_index=i;
+        if (strlen(year)==0) {
+            error(ERR_EMPTY);
+            return years;
+        }
+
+        if(atoi(year)==0){
+            cout << "Tienes que dar un numero de verdad"<< endl;
+            return years;
+        }
+
+        y= atoi(year);
+
+        for (unsigned i = 0; i<years.size(); i++) {
+            if(years[i].id==y){
+                year_index=i;
+            }
+        }
+
+        if (year_index==-1) {
+            error(ERR_NOT_EXIST);
+        }else {
+            ye=true;
         }
     }
-    if (year_index==-1) {
-        error(ERR_NOT_EXIST);
-    }else {
-        ye=true;
-    }
-    
+    years.erase(next(years.begin(), year_index));
+    return years;
     
 
 }
 vector<AcademicYear> addPhrase(vector<AcademicYear> years){
     string name, phrase;
     char aux[10];
-    bool y=false,m=false,d=false;
+    bool y=false,m=false,d=false, n=false;
     int indx_year=-1, indx_teach=-1;
-    cout << "Enter teacher name: "<< endl;
-    getline(cin,name);
 
-    // tiene que ser un bucle while TODO
-    if(name.empty()){
-        error(ERR_EMPTY);
-        return years;
-    }
+    while (!n) {
+        cout << "Enter teacher name: ";
+        getline(cin,name);
 
-    for (unsigned int j = 0; j<years.size(); j++) {
-        for(unsigned int i = 0; i<years[j].listTeachers.size(); i++){
-            if (name==years[j].listTeachers[i].name) {
-                indx_teach= i;
-                indx_year= j;
+        if(name.empty()){
+            error(ERR_EMPTY);
+            return years;
+        }
+
+        for (unsigned int j = 0; j<years.size(); j++) {
+            for(unsigned int i = 0; i<years[j].listTeachers.size(); i++){
+                if (name==years[j].listTeachers[i].name) {
+                    indx_teach= i;
+                    indx_year= j;
+                    n=true;
+                }
             }
         }
-    }
-    // if one of them are -1 has been an error  
-    if (indx_year==-1 || indx_teach==-1) {
-        error(ERR_NOT_EXIST);
-        return years;
+        // if one of them are -1 has been an error  
+        if (indx_year==-1 || indx_teach==-1) {
+            error(ERR_NOT_EXIST);
+            return years;
+        }
     }
 
-    cout << "Enter phrase: "<< endl;
+    cout << "Enter phrase: ";
     getline(cin, phrase);
     if (phrase.empty()) {
         error(ERR_EMPTY);
@@ -224,7 +243,7 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
             a.date.year=0;
         }else  {
             if (atoi(aux)==0) {
-                cout << "ha habido un error"<<endl;
+                cout << "ha habido un error";
             }else {
                 a.date.year=atoi(aux);
                 y=true;
@@ -261,19 +280,22 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
         }
     }
 
-    cout << "Enter a rating: "<<endl;
-    cin.getline(aux, 2);
+    cout << "Enter a rating: ";
+    cin.getline(aux, 10);
 
     if(strlen(aux)==0){
         a.rating=0;
     }else {
-        if (atoi(aux)==0) {
-            cout << "ha habido un error"<<endl;
-        }else {
-            while(atoi(aux)<1 || atoi(aux)>10){
-                error(ERR_RATING);
-                cout << "Enter a rating: "<<endl;
-                cin.getline(aux, 2);
+        while(atoi(aux)<1 || atoi(aux)>10){
+            aux[1]='1';
+            if (atoi(aux)==0) {
+                cout << "ha habido un error"<<endl;
+                cout << "Enter a rating: ";
+                cin.getline(aux, 10);
+            }else {
+            error(ERR_RATING);
+            cout << "Enter a rating: ";
+            cin.getline(aux, 10);
                 if (atoi(aux)==0) {
                     cout << "ha habido un error"<<endl;
                 }
@@ -348,6 +370,7 @@ void showTeacher(vector<AcademicYear> years){
 vector<AcademicYear> addAcademicYear(vector<AcademicYear> years){
     int id;
     char prueba[10];
+    bool dup=false;
     cout << "Enter academic year: ";
     cin.getline(prueba, 10);
 
@@ -360,13 +383,36 @@ vector<AcademicYear> addAcademicYear(vector<AcademicYear> years){
         cout << "bad id, try it again"<<endl;
         return years;
     }
+
     id = atoi(prueba);
-    
-    // odio esta forma de recorrer vectores
+
     for (auto itr : years) {
         if (itr.id == id) {
             error(ERR_DUPLICATED);
+            dup = true;
+        }
+    }
+    
+    while (dup) {
+        dup = false;
+        cout << "Enter academic year: ";
+        cin.getline(prueba, 10);
+
+        if (strlen(prueba)==0) {
+            error(ERR_EMPTY);
             return years;
+        }
+        if(atoi(prueba)==0){
+            cout << "bad id, try it again"<<endl;
+            return years;
+        }
+        id = atoi(prueba);
+        // odio esta forma de recorrer vectores
+        for (auto itr : years) {
+            if (itr.id == id) {
+                error(ERR_DUPLICATED);
+                dup = true;
+            }
         }
     }
 
@@ -374,6 +420,32 @@ vector<AcademicYear> addAcademicYear(vector<AcademicYear> years){
     a.id = id;
     years.push_back(a);
     return years;
+
+}
+void summary(vector<AcademicYear> years){
+    for (unsigned int i = 0 ; i< years.size() ;i++) {
+
+        if (years[i].listTeachers.size()==0) {
+            continue;
+        }
+
+        cout << "Academic year: " << years[i].id<<endl;
+        // vivan los fors
+        for (unsigned int j = 0; j<years[i].listTeachers.size(); j++) {
+            for (unsigned k = 0; k<years[i].listTeachers[j].listPhrases.size(); k++) {
+                // una vez más, formato odioso
+                if (years[i].listTeachers[j].listPhrases[k].rating==0) {
+                    cout << years[i].listTeachers[j].name << " - " << years[i].listTeachers[j].listPhrases[k].text<<endl;
+                
+                }else {
+                    cout << years[i].listTeachers[j].name << " - " << years[i].listTeachers[j].listPhrases[k].rating 
+                        << " - " << years[i].listTeachers[j].listPhrases[k].text<<endl;
+                }
+            
+            }
+        }
+    
+    }
 
 }
 
@@ -392,16 +464,19 @@ int main(){
                     years = addAcademicYear(years);
                 break;
             case '2': // Llamar a la función "deleteAcademicYear" para eliminar un curso
+                    years = deleteAcademicYear(years);
                 break;
             case '3': // Llamar a la función "addTeacher" para crear un nuevo profesor
                     years = addTeacher(years);
                 break;
             case '4': // Llamar a la función "deleteTeacher" parar eliminar un profesor
+                      
                 break;
             case '5': // Llamar a la función "showTeacher" para mostrar la información del profesor
-                      showTeacher(years);
+                    showTeacher(years);
                 break;
             case '6': // Llamar a la función "addPhrase" para añadir una nueva frase
+                      years= addPhrase(years);
                 break;
             case '7': // Llamar a la función "summary" para mostrar un resumen de las frases por curso
                 break;
