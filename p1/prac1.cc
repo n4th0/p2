@@ -148,6 +148,37 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
 
 }
 
+vector<AcademicYear> deleteAcademicYear(vector<AcademicYear> years){
+    char year[10];
+    int y, year_index=-1;
+    bool ye=false;
+    cout << "Enter academic year: ";
+    cin.getline(year, 10);
+    if (strlen(year)==0) {
+        error(ERR_EMPTY);
+    }
+    if(atoi(year)==0){
+        cout << "ha ocurrido un error";
+        return years;
+
+    }
+    y = atoi(year);
+
+    // busca el año (falta meter un while) TODO
+    for (unsigned i = 0; years.size(); i++) {
+        if(years[i].id==y){
+            year_index=i;
+        }
+    }
+    if (year_index==-1) {
+        error(ERR_NOT_EXIST);
+    }else {
+        ye=true;
+    }
+    
+    
+
+}
 vector<AcademicYear> addPhrase(vector<AcademicYear> years){
     string name, phrase;
     char aux[10];
@@ -249,11 +280,6 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
             }
         }
     }
-
-
-
-    
-
 
     years[indx_year].listTeachers[indx_teach].listPhrases.push_back(a);
     return years;
