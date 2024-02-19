@@ -40,26 +40,42 @@ void printPrimesN(int n){
 
 int main(int argc, char *argv[]){
 
-    if (argc>3) {
-        cerr << "Error: primes [-L] [-N n]"<<endl;
-        return ERROR_TOO_MUCH_ARGS;
+    int indxN=0, indxL=0;
+    for (int i = 0; i<argc-1; i++) {
+        if (strcmp(argv[i],NFLAG)==0 ) {
+            indxN=i;
+            cout << indxN<<endl;
+        }
+
+        if (strcmp(argv[i],LFLAG)==0 ) {
+            indxL=i;
+            cout << indxL<<endl;
+        }
+
     }
     
-    if(argc == 2) {
-        if (strcmp(argv[1], NFLAG)==0) {
+    if ((indxL-indxN)==1 && indxN!=0) {
+        cerr << "error at the put the parameters"<<endl;
+    }
+
+    
+    if(argc == 1) {
+        if (indxN!=0) {
             printPrimes(DEFAULT);
-        } else if (strcmp(argv[1],LFLAG)) {
+        } else if (indxL!=0) {
             printPrimesN(DEFAULT);
         }
 
     }else if(argc==3){
-        if (strcmp(argv[1],NFLAG)==0) {
-            printPrimes(atoi(argv[2]));
-        } else if (strcmp(argv[1],LFLAG)==0) {
-            printPrimesN(atoi(argv[2]));
+        if (indxN!=0) {
+
+            printPrimes(atoi(argv[indxN+1]));
+
+        } else if (indxL!=0) {
+
+            printPrimesN(atoi(argv[indxL+1]));
         }
     }
-
     cout << endl;
 
     return 0;
