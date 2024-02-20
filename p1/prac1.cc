@@ -287,7 +287,7 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
         a.rating=0;
     }else {
         while(atoi(aux)<1 || atoi(aux)>10){
-            aux[1]='1';
+            aux[0]='1';
             if (atoi(aux)==0) {
                 cout << "ha habido un error"<<endl;
                 cout << "Enter a rating: ";
@@ -302,7 +302,7 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
             }
         }
     }
-
+    a.rating=atoi(aux);
     years[indx_year].listTeachers[indx_teach].listPhrases.push_back(a);
     return years;
 }
