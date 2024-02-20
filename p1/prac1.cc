@@ -86,6 +86,35 @@ void showMenu(){
          << "Option: ";
 }
 
+vector<AcademicYear> deleteTeacher(vector<AcademicYear> years){
+    string s;
+    bool name=false;
+    int indx_teach=-1, indx_year=-1;
+
+    while (!name) {
+        cout << "Enter teacher name: ";
+        getline(cin, s);
+        if (s.empty()) {
+            error(ERR_EMPTY);
+            return years;
+        }
+        for (unsigned int i = 0; i< years.size(); i++) {
+            for (unsigned int j = 0; j< years[i].listTeachers.size(); j++) {
+                if (s==years[i].listTeachers[j].name) {
+                    name=true;
+                    indx_teach=j;
+                    indx_year=i;
+                }
+            }
+        }
+    }
+
+    years[indx_year].listTeachers.erase(next(years[indx_year].listTeachers.begin(), indx_teach));
+    return years;
+
+}
+
+
 vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     int id, indx;
     char prueba[10];
@@ -426,25 +455,27 @@ void summary(vector<AcademicYear> years){
     for (unsigned int i = 0 ; i< years.size() ;i++) {
 
         if (years[i].listTeachers.size()==0) {
+            cout << years[i].listTeachers.size();
             continue;
         }
 
         cout << "Academic year: " << years[i].id<<endl;
         // vivan los fors
         for (unsigned int j = 0; j<years[i].listTeachers.size(); j++) {
-            for (unsigned k = 0; k<years[i].listTeachers[j].listPhrases.size(); k++) {
+            for (unsigned int k = 0; k<years[i].listTeachers[j].listPhrases.size(); k++) {
                 // una vez más, formato odioso
+                cout << years[i].listTeachers[j].name;
+
                 if (years[i].listTeachers[j].listPhrases[k].rating==0) {
-                    cout << years[i].listTeachers[j].name << " - " << years[i].listTeachers[j].listPhrases[k].text<<endl;
+                     cout << " - " << years[i].listTeachers[j].listPhrases[k].text<<endl;
                 
                 }else {
-                    cout << years[i].listTeachers[j].name << " - " << years[i].listTeachers[j].listPhrases[k].rating 
+
+                    cout << " - " << years[i].listTeachers[j].listPhrases[k].rating 
                         << " - " << years[i].listTeachers[j].listPhrases[k].text<<endl;
                 }
-            
             }
         }
-    
     }
 
 }
@@ -470,7 +501,7 @@ int main(){
                     years = addTeacher(years);
                 break;
             case '4': // Llamar a la función "deleteTeacher" parar eliminar un profesor
-                      
+                      years = deleteTeacher(years);
                 break;
             case '5': // Llamar a la función "showTeacher" para mostrar la información del profesor
                     showTeacher(years);
@@ -479,6 +510,7 @@ int main(){
                       years= addPhrase(years);
                 break;
             case '7': // Llamar a la función "summary" para mostrar un resumen de las frases por curso
+                      summary(years);
                 break;
             case 'q': break;
             default: error(ERR_OPTION);
