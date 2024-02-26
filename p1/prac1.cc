@@ -2,14 +2,11 @@
 // DNI: 48727425 Q
 // Nombre: NATHAN RODRIGUEZ MOYSES
 
-#include <cstdio>
 #include <iostream>
 #include <string>
-#include <system_error>
-#include <type_traits>
+#include <string.h>
 #include <vector>
 #include <stdlib.h>
-#include <string.h>
 
 
 using namespace std;
@@ -86,6 +83,28 @@ void showMenu(){
          << "7- Summary" << endl
          << "q- Quit" << endl
          << "Option: ";
+}
+struct Date askDate(){
+    Date a;
+    string s;
+    int pos;
+    cout<< "Enter date (year-month-day): ";
+    getline(cin, s);
+
+    if (s.empty()) {
+        a.day=0;
+        a.year=0;
+        a.month=0;
+        return a;
+    }
+
+    a.year=atoi(s.substr(0,4).c_str());
+    s.erase(0,5);
+    pos= s.find("-");
+    a.month = atoi(s.substr(0,pos).c_str());
+    s.erase(0, pos+1);
+    a.day = atoi(s.c_str());
+    return a;
 }
 
 vector<AcademicYear> deleteTeacher(vector<AcademicYear> years){
@@ -230,36 +249,11 @@ vector<AcademicYear> deleteAcademicYear(vector<AcademicYear> years){
 
 }
 
-struct Date askDate(){
-    Date a;
-    string s;
-    int pos;
-    cout<< "Enter date (year-month-day): "<<endl;
-    getline(cin, s);
-
-    if (s.empty()) {
-        a.day=0;
-        a.year=0;
-        a.month=0;
-        return a;
-    }
-
-    a.year=stoi(s.substr(0,4));
-    pos= s.find("-");
-    s.substr(0,1);
-    a.month = stoi(s.substr(0,pos-1));
-    a.day = stoi(s);
-    return a;
-
-    
-
-
-}
 
 vector<AcademicYear> addPhrase(vector<AcademicYear> years){
     string name, phrase;
     char aux[10];
-    bool y=false,m=false,d=false, n=false;
+    bool n=false;
     int indx_year=-1, indx_teach=-1;
 
     while (!n) {
@@ -296,7 +290,7 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
 
     Phrase a;
     a.text=phrase;
-    a.date= askDate();
+    a.date = askDate();
 
 
     cout << "Enter a rating: ";
