@@ -1,8 +1,10 @@
 // Programación 2 - Práctica 1
 // DNI: 48727425 Q
 // Nombre: NATHAN RODRIGUEZ MOYSES
+
 #include <cstdio>
 #include <iostream>
+#include <string>
 #include <system_error>
 #include <type_traits>
 #include <vector>
@@ -117,6 +119,7 @@ vector<AcademicYear> deleteTeacher(vector<AcademicYear> years){
 
 vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     int id, indx;
+    string s;
     char prueba[10];
     char auxiliar[10];
     bool exist= false;
@@ -171,7 +174,9 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     getline(cin, a.nickname);
 
     cout <<"Enter subject: ";
-    cin.getline(a.subject, MAXSUBJECT-1);
+
+    getline(cin, s);
+    strncpy(a.subject, s.c_str(), 50);
     
     while (a.rating<1 || a.rating>5 || atoi(auxiliar)==0) {
         cout <<"Enter rating: ";
@@ -224,6 +229,33 @@ vector<AcademicYear> deleteAcademicYear(vector<AcademicYear> years){
     
 
 }
+
+struct Date askDate(){
+    Date a;
+    string s;
+    int pos;
+    cout<< "Enter date (year-month-day): "<<endl;
+    getline(cin, s);
+
+    if (s.empty()) {
+        a.day=0;
+        a.year=0;
+        a.month=0;
+        return a;
+    }
+
+    a.year=stoi(s.substr(0,4));
+    pos= s.find("-");
+    s.substr(0,1);
+    a.month = stoi(s.substr(0,pos-1));
+    a.day = stoi(s);
+    return a;
+
+    
+
+
+}
+
 vector<AcademicYear> addPhrase(vector<AcademicYear> years){
     string name, phrase;
     char aux[10];
@@ -264,50 +296,8 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
 
     Phrase a;
     a.text=phrase;
+    a.date= askDate();
 
-    while (!y) {
-        cout << "Enter date (year-month-day):";
-        cin.getline(aux,10);
-        if (strlen(aux)==0) {
-            a.date.year=0;
-        }else  {
-            if (atoi(aux)==0) {
-                cout << "ha habido un error";
-            }else {
-                a.date.year=atoi(aux);
-                y=true;
-            }
-        }
-    }
-    while (!m) {
-        cout << "Enter date (year-month-day):";
-        cin.getline(aux,10);
-        if (strlen(aux)==0) {
-            a.date.year=0;
-        }else  {
-            if (atoi(aux)==0) {
-                cout << "ha habido un error"<<endl;
-            }else {
-                a.date.month=atoi(aux);
-                m=true;
-            }
-        }
-    }
-
-    while (!d) {
-        cout << "Enter date (year-month-day):";
-        cin.getline(aux,10);
-        if (strlen(aux)==0) {
-            a.date.year=0;
-        }else  {
-            if (atoi(aux)==0) {
-                cout << "ha habido un error"<<endl;
-            }else {
-                a.date.day=atoi(aux);
-                d=true;
-            }
-        }
-    }
 
     cout << "Enter a rating: ";
     cin.getline(aux, 10);
@@ -398,6 +388,8 @@ void showTeacher(vector<AcademicYear> years){
 
 vector<AcademicYear> addAcademicYear(vector<AcademicYear> years){
     int id;
+    string s;
+
     char prueba[10];
     bool dup=false;
     cout << "Enter academic year: ";
