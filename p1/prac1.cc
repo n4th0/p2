@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <unistd.h>
 #include <string.h>
 #include <vector>
 #include <stdlib.h>
@@ -438,30 +439,40 @@ vector<AcademicYear> addAcademicYear(vector<AcademicYear> years){
 
 }
 void summary(vector<AcademicYear> years){
-    for (unsigned int i = 0 ; i< years.size() ;i++) {
+    int aux, indx=years.size()-1;
 
-        if (years[i].listTeachers.size()==0) {
-            cout << years[i].listTeachers.size();
-            continue;
-        }
-
-        cout << "Academic year: " << years[i].id<<endl;
-        // vivan los fors
-        for (unsigned int j = 0; j<years[i].listTeachers.size(); j++) {
-            for (unsigned int k = 0; k<years[i].listTeachers[j].listPhrases.size(); k++) {
-                // una vez más, formato odioso
-                cout << years[i].listTeachers[j].name;
-
-                if (years[i].listTeachers[j].listPhrases[k].rating==0) {
-                     cout << " - " << years[i].listTeachers[j].listPhrases[k].text<<endl;
-                
-                }else {
-
-                    cout << " - " << years[i].listTeachers[j].listPhrases[k].rating 
-                        << " - " << years[i].listTeachers[j].listPhrases[k].text<<endl;
-                }
+    while (years.size()!=0) {
+        aux=years[years.size()-1].id;
+        for (unsigned int i = 0; i<years.size(); i++) {
+            if (years[i].id<aux) {
+                aux = years[i].id;
+                indx= i;
             }
         }
+
+        if (years[indx].listTeachers.size()!=0) {
+
+            cout << "Academic year: " << years[indx].id<<endl;
+            // vivan los fors
+            for (unsigned int j = 0; j<years[indx].listTeachers.size(); j++) {
+                for (unsigned int k = 0; k<years[indx].listTeachers[j].listPhrases.size(); k++) {
+                    // una vez más, formato odioso
+                    cout << years[indx].listTeachers[j].name;
+
+                    if (years[indx].listTeachers[j].listPhrases[k].rating==0) {
+                         cout << " - " << years[indx].listTeachers[j].listPhrases[k].text<<endl;
+                    
+                    }else {
+
+                        cout << " - " << years[indx].listTeachers[j].listPhrases[k].rating 
+                            << " - " << years[indx].listTeachers[j].listPhrases[k].text<<endl;
+                    }
+                }
+            }
+
+        }
+
+        years.erase(next(years.begin(), indx));
     }
 
 }
