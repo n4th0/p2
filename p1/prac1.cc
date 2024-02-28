@@ -140,28 +140,22 @@ vector<AcademicYear> deleteTeacher(vector<AcademicYear> years){
 vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     int id, indx;
     string s;
-    char prueba[10];
+    string prueba;
     char auxiliar[10];
     bool exist= false;
+    bool duplicated= false;
     Teacher a;
 
     cout <<"Enter academic year: ";
-    cin.getline(prueba, 10);
+    getline(cin, prueba);
 
-    if (strlen(prueba)==0) {
+    if (prueba.empty()) {
         error(ERR_EMPTY);
         return years;
     }
 
-    if (atoi(prueba)==0) {
-        cout << "bad input"<<endl;
-        return years;
-    }
+    id = stoi(prueba);
 
-    // esto es solo una idea
-    id = atoi(prueba);
-
-    // falta chequear que no sea una empty string
     for (unsigned int i = 0; i < years.size() ; i++) {
         if (years[i].id==id) {
             exist= true;
@@ -175,19 +169,39 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     }
 
     cout <<"Enter teacher name: ";
-    cin>>a.name;
-    cin.get();
-    if (a.name.empty()) {
+    getline(cin, a.name);
+
+    if(a.name.empty()){
         error(ERR_EMPTY);
         return years;
     }
 
     for (unsigned int i = 0; i < years[indx].listTeachers.size() ; i++) {
         if (a.name==years[indx].listTeachers[i].name) {
+            duplicated= true;
             error(ERR_DUPLICATED);
-            return years;
         }
     }
+    while(duplicated){
+        duplicated=false;
+
+        cout <<"Enter teacher name: ";
+        getline(cin, a.name);
+
+        if(a.name.empty()){
+            error(ERR_EMPTY);
+            return years;
+        }
+
+        for (unsigned int i = 0; i < years[indx].listTeachers.size() ; i++) {
+            if (a.name==years[indx].listTeachers[i].name) {
+                duplicated= true;
+                error(ERR_DUPLICATED);
+            }
+        }
+
+    }
+
 
     // falta añadir el error empty string
     cout <<"Enter nickname: ";
@@ -197,6 +211,7 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
 
     getline(cin, s);
     strncpy(a.subject, s.c_str(), 50);
+    a.rating = 0;
     
     while (a.rating<1 || a.rating>5 || atoi(auxiliar)==0) {
         cout <<"Enter rating: ";
@@ -294,7 +309,7 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
     a.date = askDate();
 
 
-    cout << "Enter a rating: ";
+    cout << "Enter rating: ";
     cin.getline(aux, 10);
 
     if(strlen(aux)==0){
@@ -356,7 +371,7 @@ void showTeacher(vector<AcademicYear> years){
         cout<<"Phrase "<<i+1 ;
         if (years[indx_year].listTeachers[indx_teach].listPhrases[i].date.year==0 && years[indx_year].listTeachers[indx_teach].listPhrases[i].rating==0) {
 
-            cout << " : " << years[indx_year].listTeachers[indx_teach].listPhrases[i].text<< endl;
+            cout << ": " << years[indx_year].listTeachers[indx_teach].listPhrases[i].text<< endl;
         
         }else if (years[indx_year].listTeachers[indx_teach].listPhrases[i].date.year==0) {
 
@@ -444,7 +459,7 @@ void summary(vector<AcademicYear> years){
     while (years.size()!=0) {
         aux=years[years.size()-1].id;
         for (unsigned int i = 0; i<years.size(); i++) {
-            if (years[i].id<aux) {
+            if (years[i].id>aux) {
                 aux = years[i].id;
                 indx= i;
             }
@@ -486,7 +501,7 @@ int main(){
         showMenu();
         cin >> option;
         cin.get(); // Para evitar que el salto de línea se quede en el buffer de teclado y luego pueda dar problemas si usas "getline"
-        cout << "\e[1;1H\e[2J";
+        //cout << "\e[1;1H\e[2J";
         switch(option){
             case '1': // Llamar a la función "addAcademicYear" para crear un nuevo curso
                     years = addAcademicYear(years);
