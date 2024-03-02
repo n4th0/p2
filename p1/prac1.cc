@@ -141,7 +141,7 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     int id, indx;
     string s;
     string prueba;
-    char auxiliar[10];
+    string rating;
     bool exist= false;
     bool duplicated= false;
     Teacher a;
@@ -182,6 +182,7 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
             error(ERR_DUPLICATED);
         }
     }
+
     while(duplicated){
         duplicated=false;
 
@@ -210,42 +211,58 @@ vector<AcademicYear> addTeacher(vector<AcademicYear> years){
     cout <<"Enter subject: ";
 
     getline(cin, s);
+
+    if (s.empty()) {
+        error(ERR_EMPTY);
+        return years;
+    }
+
     strncpy(a.subject, s.c_str(), 50);
-    a.rating = 0;
+
     
-    while (a.rating<1 || a.rating>5 || atoi(auxiliar)==0) {
+    cout <<"Enter rating: ";
+    getline(cin,rating);
+
+    if (rating.empty()) {
+        a.rating = 0;
+        years[indx].listTeachers.push_back(a);
+        return years;
+    }
+
+    while (stoi(rating)<1 || stoi(rating)>5) {
+        error(ERR_DUPLICATED);
+
         cout <<"Enter rating: ";
-        cin.getline(auxiliar, 10);
-        if (atoi(auxiliar)!=0) {
-            a.rating = atoi(auxiliar);
+        getline(cin,rating);
+        if (rating.empty()) {
+            a.rating = 0;
+            years[indx].listTeachers.push_back(a);
+            return years;
         }
     }
 
+    a.rating=stoi(rating);
     years[indx].listTeachers.push_back(a);
     return years;
+
 
 }
 
 vector<AcademicYear> deleteAcademicYear(vector<AcademicYear> years){
-    char year[10];
+    string year;
     int y=0, year_index=-1;
     bool ye=false;
 
     while (!ye) {
         cout << "Enter academic year: ";
-        cin.getline(year, 10);
+        getline(cin,year);
 
-        if (strlen(year)==0) {
+        if (year.empty()) {
             error(ERR_EMPTY);
             return years;
         }
 
-        if(atoi(year)==0){
-            cout << "Tienes que dar un numero de verdad"<< endl;
-            return years;
-        }
-
-        y= atoi(year);
+        y= stoi(year);
 
         for (unsigned i = 0; i<years.size(); i++) {
             if(years[i].id==y){
@@ -400,22 +417,18 @@ vector<AcademicYear> addAcademicYear(vector<AcademicYear> years){
     int id;
     string s;
 
-    char prueba[10];
+    string prueba;
     bool dup=false;
     cout << "Enter academic year: ";
-    cin.getline(prueba, 10);
+    getline(cin,prueba);
 
-    if (strlen(prueba)==0) {
+    if (prueba.empty()) {
         error(ERR_EMPTY);
         return years;
     }
 
-    if(atoi(prueba)==0){
-        cout << "bad id, try it again"<<endl;
-        return years;
-    }
 
-    id = atoi(prueba);
+    id = stoi(prueba);
 
     for (auto itr : years) {
         if (itr.id == id) {
@@ -427,17 +440,15 @@ vector<AcademicYear> addAcademicYear(vector<AcademicYear> years){
     while (dup) {
         dup = false;
         cout << "Enter academic year: ";
-        cin.getline(prueba, 10);
+        getline(cin, prueba);
 
-        if (strlen(prueba)==0) {
+        if (prueba.empty()) {
             error(ERR_EMPTY);
             return years;
         }
-        if(atoi(prueba)==0){
-            cout << "bad id, try it again"<<endl;
-            return years;
-        }
-        id = atoi(prueba);
+
+
+        id = stoi(prueba);
         // odio esta forma de recorrer vectores
         for (auto itr : years) {
             if (itr.id == id) {
