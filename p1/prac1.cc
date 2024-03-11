@@ -285,8 +285,8 @@ vector<AcademicYear> deleteAcademicYear(vector<AcademicYear> years){
 
 vector<AcademicYear> addPhrase(vector<AcademicYear> years){
     string name, phrase;
-    char aux[10];
-    bool n=false;
+    string aux;
+    bool n=false, mal = true;
     int indx_year=-1, indx_teach=-1;
 
     while (!n) {
@@ -327,28 +327,29 @@ vector<AcademicYear> addPhrase(vector<AcademicYear> years){
 
 
     cout << "Enter rating: ";
-    cin.getline(aux, 10);
+    getline(cin,aux);
 
-    if(strlen(aux)==0){
+    if(aux.empty()){
         a.rating=0;
     }else {
-        while(atoi(aux)<1 || atoi(aux)>10){
-            aux[0]='1';
-            if (atoi(aux)==0) {
-                cout << "ha habido un error"<<endl;
-                cout << "Enter a rating: ";
-                cin.getline(aux, 10);
-            }else {
+        a.rating=stoi(aux);
+
+        while((a.rating<1 || a.rating>10) && mal){
+
             error(ERR_RATING);
-            cout << "Enter a rating: ";
-            cin.getline(aux, 10);
-                if (atoi(aux)==0) {
-                    cout << "ha habido un error"<<endl;
-                }
+            cout << "Enter rating: ";
+            getline(cin,aux);
+
+            if (aux.empty()) {
+                a.rating=0;
+                mal = false;
+            }else {
+                a.rating=stoi(aux);
             }
+
         }
     }
-    a.rating=atoi(aux);
+
     years[indx_year].listTeachers[indx_teach].listPhrases.push_back(a);
     return years;
 }
