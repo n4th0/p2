@@ -1,7 +1,9 @@
 #include <iostream>
+#include <cctype>
 #include <vector>
 #include <fstream>
 #include <stdlib.h>
+#include <string.h>
 
 using namespace std;
 
@@ -182,80 +184,336 @@ struct Database batchAddQuestion(struct Database D){
     }while (!fr.is_open());
 
 
-    while(1){
-getline(fr, s);
-        /*
-        if(s.empty()) 
+    while(getline(fr, s)){
+        count++;
+
+        noguion = true;
+
+        if(s.empty())
             continue;
 
-        if(s[0]>5 || s[0]<1){
-            count++;
+
+        if(atoi(s.substr(0,1).c_str())>5 || atoi(s.substr(0,1).c_str())<1){
+            cout << "Error line "<< count <<endl;
             continue;
         }
-        unit = stoi(s.substr(1,1));
+
+        unit = stoi(s.substr(0,1));
 
         s.erase(0,2);
+
         for (unsigned i = 0;noguion && i<s.size(); i++) {
             if(s[i]=='|'){
                 pos = i;
                 noguion =false;
             }
         }
+
+
         if (!noguion) {
-            if ((pos == s.size() || pos == 0) ) {
-                count++;
+            if (pos == s.size()-1 || pos == 0)  {
+                cout << "Error line "<< count <<endl;
                 continue;
             }
 
-            question = s.substr(0, pos);
+            question = s.substr(0, pos-1);
             s.erase(0, pos);
             answer = s;
 
             D.questions.push_back(ponerCuestion(question, answer, unit, D.nextId+countCorrectly));
-            count++;
+            countCorrectly++;
+        }else {
+            question = s;
+            D.questions.push_back(ponerCuestion(question, "", unit, D.nextId+countCorrectly));
             countCorrectly++;
         }
-        question = s;
-        D.questions.push_back(ponerCuestion(question, "", unit, D.nextId+countCorrectly));
-        count++;
-        countCorrectly++;
-        */
-        cout << s<<endl;
-
     }
+
+
+    D.nextId += countCorrectly;
+    cout << "Summary: " << countCorrectly<< "/"<< count << " question added"<< endl;
+    fr.close();
+    return D;
 
 }
 struct Database deleteQuestion(struct Database D){
-    int pos, index;
+    int pos; 
+    unsigned int index;
     string aux;
     bool found;
-    cout << "Enter question id: ";
-    getline(cin, aux);
-    index = stoi(aux);
-    for (unsigned int i = 0; i< D.questions.size(); i++) {
-        if(index == D.questions[i].id){
-            // more stuff
+
+    do {
+        cout << "Enter question id: ";
+        getline(cin, aux);
+        index = stoi(aux);
+        found = false;
+        if (aux.empty()) {
+            error(ERR_EMPTY);
+            return D;
+        }
+        for (unsigned int i = 0; i< D.questions.size(); i++) {
+            if(index == D.questions[i].id){
+                pos = i;
+                found = true;
+            }
+        }
+        if (!found) {
+            error(ERR_ID);
+        }
+    }while (!found);
+
+    D.questions.erase(next(D.questions.begin(), pos));
+
+    return D;
+}
+string quitarEspBlanco(string s){
+
+    int i = 0;
+    while (s[i]==' ') {
+        i++;
+    }
+    s.erase(0, i);
+    i = s.length()-1;
+    while (s[i]==' ') {
+        i--;
+    }
+    //cout << i << endl;
+    s.erase(i+1, s.length()-i);
+
+    return s;
+}
+string encr(string s){
+    for (unsigned int i = 0; i<s.length(); i++) {
+        switch (s[i]) {
+            case '1':
+                s[i]='R';
+                break;
+            case '2':
+                s[i]='W';
+                break;
+            case '3':
+                s[i]='A';
+                break;
+            case '4':
+                s[i]='G';
+                break;
+            case '5':
+                s[i]='M';
+                break;
+            case '6':
+                s[i]='Y';
+                break;
+            case '7':
+                s[i]='F';
+                break;
+            case '8':
+                s[i]='P';
+                break;
+            case '9':
+                s[i]='D';
+                break;
+            case '0':
+                s[i]='T';
+                break;
+        }
+    }
+    return s;
+}
+struct Teacher addTeacher(struct Database D){
+    string s, passwrd;
+    bool noalfab, tam ,dup, err;
+    struct Teacher T;
+    do {
+        noalfab = false;
+        tam = false;
+        dup = false;
+
+        cout << "Enter teacher name: ";
+        getline(cin, s);
+        if (s.empty()) {
+            error(ERR_EMPTY);
+            return T;
+        }
+
+
+        for (unsigned int i = 0; i<s.length(); i++) {
+            if (!isalpha(s[i]) && s[i]!=' ') {
+                noalfab = true;
+            }
+        }
+
+        s= quitarEspBlanco(s);
+
+        if (3>s.length() || s.length()> KMAXNAME-1) {
+            error(ERR_NAME);
+            tam = true;
+        }
+        for (unsigned int i = 0; i<D.teachers.size(); i++) {
+            if (s == D.teachers[i].name) {
+                error(ERR_DUPLICATED);
+                dup = true;
+            }
+        }
+
+        //cout << s << noalfab << tam << dup;
+    }while (noalfab || tam || dup);
+    
+    do {
+        err= false;
+    
+        cout << "Enter password: ";
+        getline(cin, passwrd);
+
+        if (passwrd.empty()) {
+            error(ERR_EMPTY);
+            return T;
+        }
+        for (unsigned int i = 0; i<passwrd.length(); i++) {
+            if (!isdigit(passwrd[i])) {
+                err = true;
+            }
+        }
+        if (passwrd.length()>4) {
+            error(ERR_PASSWORD);
+            err =true;
 
         }
-    
+    }while (err);
+
+    passwrd = encr(passwrd);
+    strcpy(T.name, s.c_str());
+    strcpy(T.password, passwrd.c_str());
+    T.answered = 0;
+    return T;
+}
+
+struct Database addAnswers(struct Database D){
+
+    string teacherName, password, questionId, answer;
+    unsigned int positionTeacher, count = 0;
+    bool found, auth;
+
+    do {
+        found = false;
+        cout << "Enter teacher name: ";
+        getline(cin, teacherName);
+        for (unsigned int i = 0; i<D.teachers.size(); i++) {
+            if (D.teachers[i].name == teacherName) {
+                found = true;
+                positionTeacher = i;
+            }
+        }
+
+        if (teacherName.empty()) {
+            error(ERR_EMPTY);
+            return D;
+        }
+        if (!found) {
+            error(ERR_NAME);
+        }
+
+    }while (!found);
+
+    do {
+        auth = false;
+        cout << "Enter password: ";
+        getline(cin, password);
+        password = encr(password);
+        auth = password==D.teachers[positionTeacher].password;
+        if (password.empty()) {
+            error(ERR_EMPTY);
+            return D;
+        }
+        if (!auth) {
+            error(ERR_PASSWORD);
+        }
+
+    }while(!auth);
+    do {
+        count = 0;
+
+        for (unsigned int i = 0; i<D.questions.size(); i++) {
+            if (D.questions[i].answer.empty()) {
+                cout << D.questions[i].id << ". (" << D.questions[i].unit << ") " <<D.questions[i].question <<endl;
+                count++;
+            }
+        }
+
+        do {
+            found= false;
+
+            cout << "Enter question id: ";
+            getline(cin, questionId);
+
+            if (questionId == "b") {
+                // es muy mala practica usar esto como para cerrar el bucle, pero así me evito un código bastante complejo 
+                return D;
+            }
+
+            if (count ==0) {
+                error(ERR_NO_QUESTIONS);
+                return D;
+            }
+            if (questionId.empty()) {
+                error(ERR_EMPTY);
+                return D;
+            }
+            for (unsigned int i = 0; i<D.questions.size(); i++) {
+                if (D.questions[i].id == (unsigned int) atoi(questionId.c_str())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                error(ERR_ID);
+            }
+        }while (!found);
+
+        do {
+
+            cout << "Enter answer: ";
+            getline(cin, answer);
+            if (answer.empty()) {
+                error(ERR_EMPTY);
+                return D;
+            }
+
+            if (answer.find_first_of('|')!=string::npos) {
+                error(ERR_CHAR);
+            }
+
+        }while(answer.find_first_of('|')!=string::npos);
+
+        D.questions[atoi(questionId.c_str())].answer = answer;
+
+    }while (count !=0);
+
+    // nunca debería llegar aqui (preguntar en clase sobre la mala practica de salir con un return en el caso de la "b")
+    return D;
+}
+
+void viewAnswers(struct Database D){
+    struct Question q;
+    for (unsigned int i = 0; i<D.questions.size(); i++) {
+        if (!D.questions[i].answer.empty()) {
+            q = D.questions[i];
+            cout << q.id << ". (" <<q.unit << ") "<< q.question << ": " << q.answer << endl;
+        }
     }
-
-    
-
+}
+void viewStatistics(struct Database D){
+    unsigned int answered=0;
+    cout<< "Total number of questions: "<<D.questions.size() << endl;
+    for (unsigned int i = 0; i<D.questions.size(); i++) {
+        if (!D.questions[i].answer.empty()) {
+            answered++;
+        }
+    }
+    cout<< "Number of questions answered: "<<answered << endl;
+    for (unsigned int i =0; i<D.teachers.size(); i++) {
+        cout << D.teachers[i].name<< ": "<< D.teachers[i].answered<< endl;
+    }
 }
 
-void addTeacher(){
-
-}
-void addAnswers(){
-
-}
-void viewAnswers(){
-
-}
-void viewStatistics(){
-
-}
 void exportQuestions(){
 
 }
@@ -264,6 +522,7 @@ int main(int argc, char *argv[]) {
     Database data;
     data.nextId=1;
     char option;
+    struct Teacher t;
     
     do{
         showMenu();
@@ -280,8 +539,12 @@ int main(int argc, char *argv[]) {
             case '3': // Llamar a la función "deleteQuestion" para eliminar una pregunta
                 break;
             case '4': // Llamar a la función "AddTeacher" para añadir un nuevo profesor
+                       t = addTeacher(data);
+                       data.teachers.push_back(t);
+
                 break;
             case '5': // Llamar a la función "addAnswers" para añadir respuestas a las preguntas
+                      addAnswers(data);
                 break;
             case '6': // Llamar a la función "viewAnswers" para mostrar las preguntas con sus respuestas
                 break;
