@@ -4,6 +4,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 
 using namespace std;
 
@@ -419,7 +420,7 @@ struct Database addAnswers(struct Database D){
         cout << "Enter password: ";
         getline(cin, password);
         password = encr(password);
-        auth = password==D.teachers[positionTeacher].password;
+        auth = (password==D.teachers[positionTeacher].password);
         if (password.empty()) {
             error(ERR_EMPTY);
             return D;
@@ -429,6 +430,7 @@ struct Database addAnswers(struct Database D){
         }
 
     }while(!auth);
+
     do {
         count = 0;
 
@@ -483,6 +485,9 @@ struct Database addAnswers(struct Database D){
 
         }while(answer.find_first_of('|')!=string::npos);
 
+        cout << "Llego a guardar"<<endl;
+
+        // esto no guarda por algun tipo de razón
         D.questions[atoi(questionId.c_str())].answer = answer;
 
     }while (count !=0);
@@ -514,8 +519,32 @@ void viewStatistics(struct Database D){
     }
 }
 
-void exportQuestions(){
+void exportQuestions(struct Database D){
+    string filename;
+    ofstream fr;
+    do {
+        cout << "Enter filename: ";
+        getline(cin, filename);
+        if (filename.empty()) {
+            error(ERR_EMPTY);
+            return;
+        }
+        fr.open(filename);
 
+        if (!fr.is_open()) {
+            error(ERR_FILE);
+
+        }
+    }while (!fr.is_open());
+    for (unsigned int i = 0; i<D.questions.size(); i++) {
+        if (D.questions[i].answer.empty()) {
+            fr << D.questions[i].unit << "|"<< D.questions[i].question<<endl;
+        
+        }else {
+            fr << D.questions[i].unit << "|"<< D.questions[i].question<<"|"<<D.questions[i].answer<<endl;
+        }
+    }
+    fr.close();
 }
 // Función principal. Tendrás que añadir más código tuyo
 int main(int argc, char *argv[]) {
@@ -537,6 +566,7 @@ int main(int argc, char *argv[]) {
                       data = batchAddQuestion(data);
                 break;
             case '3': // Llamar a la función "deleteQuestion" para eliminar una pregunta
+                      data = deleteQuestion(data);
                 break;
             case '4': // Llamar a la función "AddTeacher" para añadir un nuevo profesor
                        t = addTeacher(data);
@@ -544,13 +574,16 @@ int main(int argc, char *argv[]) {
 
                 break;
             case '5': // Llamar a la función "addAnswers" para añadir respuestas a las preguntas
-                      addAnswers(data);
+                      data = addAnswers(&data);
                 break;
             case '6': // Llamar a la función "viewAnswers" para mostrar las preguntas con sus respuestas
+                      viewAnswers(data);
                 break;
             case '7': // Llamar a la función "viewStatistics" para ver las estadísticas de las preguntas
+                      viewStatistics(data);
                 break;
             case '8': // Llamar a la función "exportQuestions" para guardar las preguntas en fichero
+                      exportQuestions(data);
                 break;
             case 'q': // Salir del programa guardando los profesores en fichero
                 break;
