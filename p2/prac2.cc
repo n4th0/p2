@@ -113,7 +113,7 @@ void showMenu() {
          << "q- Quit" << endl
          << "Option: ";
 }
-// function developed by the pupil
+
 void loadTeachers(){
 
 }
@@ -123,6 +123,7 @@ struct Database addQuestion(struct Database D){
     int unitNumber;
     bool barra;
     struct Question Q;
+
     do{
         cout << "Enter unit: ";
         getline(cin, unit);
@@ -161,15 +162,15 @@ struct Database addQuestion(struct Database D){
     D.nextId++;
 
     return D;
-
 }
-struct Database batchAddQuestion(struct Database D){
 
+struct Database batchAddQuestion(struct Database D){
     string name, s, answer, question;
     int unsigned count = 0, pos = 0;
     int countCorrectly = 0, unit;
     bool noguion = true;
     ifstream fr;
+
     do {
         cout << "Enter filename: "; 
         getline(cin, name);
@@ -183,7 +184,6 @@ struct Database batchAddQuestion(struct Database D){
         
         }
     }while (!fr.is_open());
-
 
     while(getline(fr, s)){
         count++;
@@ -230,13 +230,13 @@ struct Database batchAddQuestion(struct Database D){
         }
     }
 
-
     D.nextId += countCorrectly;
     cout << "Summary: " << countCorrectly<< "/"<< count << " question added"<< endl;
     fr.close();
     return D;
 
 }
+
 struct Database deleteQuestion(struct Database D){
     int pos; 
     unsigned int index;
@@ -267,8 +267,8 @@ struct Database deleteQuestion(struct Database D){
 
     return D;
 }
-string quitarEspBlanco(string s){
 
+string quitarEspBlanco(string s){
     int i = 0;
     while (s[i]==' ') {
         i++;
@@ -278,11 +278,12 @@ string quitarEspBlanco(string s){
     while (s[i]==' ') {
         i--;
     }
-    //cout << i << endl;
+    //cout << i << endl; // debuggin stuff
     s.erase(i+1, s.length()-i);
 
     return s;
 }
+
 string encr(string s){
     for (unsigned int i = 0; i<s.length(); i++) {
         switch (s[i]) {
@@ -320,10 +321,12 @@ string encr(string s){
     }
     return s;
 }
+
 struct Teacher addTeacher(struct Database D){
     string s, passwrd;
     bool noalfab, tam ,dup, err;
     struct Teacher T;
+
     do {
         noalfab = false;
         tam = false;
@@ -389,7 +392,6 @@ struct Teacher addTeacher(struct Database D){
 }
 
 struct Database addAnswers(struct Database D){
-
     string teacherName, password, questionId, answer;
     unsigned int positionTeacher, count = 0;
     bool found, auth;
@@ -460,20 +462,24 @@ struct Database addAnswers(struct Database D){
                 error(ERR_EMPTY);
                 return D;
             }
+
             for (unsigned int i = 0; i<D.questions.size(); i++) {
                 if (D.questions[i].id == (unsigned int) atoi(questionId.c_str())) {
                     found = true;
                 }
             }
+
             if (!found) {
                 error(ERR_ID);
             }
+
         }while (!found);
 
         do {
 
             cout << "Enter answer: ";
             getline(cin, answer);
+
             if (answer.empty()) {
                 error(ERR_EMPTY);
                 return D;
@@ -485,7 +491,8 @@ struct Database addAnswers(struct Database D){
 
         }while(answer.find_first_of('|')!=string::npos);
 
-        cout << "Llego a guardar"<<endl;
+        // debugging stuff
+        // cout << "Llego a guardar"<<endl;
 
         // esto no guarda por algun tipo de razón
         D.questions[atoi(questionId.c_str())].answer = answer;
@@ -505,14 +512,17 @@ void viewAnswers(struct Database D){
         }
     }
 }
+
 void viewStatistics(struct Database D){
     unsigned int answered=0;
+
     cout<< "Total number of questions: "<<D.questions.size() << endl;
     for (unsigned int i = 0; i<D.questions.size(); i++) {
         if (!D.questions[i].answer.empty()) {
             answered++;
         }
     }
+
     cout<< "Number of questions answered: "<<answered << endl;
     for (unsigned int i =0; i<D.teachers.size(); i++) {
         cout << D.teachers[i].name<< ": "<< D.teachers[i].answered<< endl;
@@ -522,6 +532,7 @@ void viewStatistics(struct Database D){
 void exportQuestions(struct Database D){
     string filename;
     ofstream fr;
+
     do {
         cout << "Enter filename: ";
         getline(cin, filename);
@@ -529,23 +540,26 @@ void exportQuestions(struct Database D){
             error(ERR_EMPTY);
             return;
         }
+
         fr.open(filename);
 
         if (!fr.is_open()) {
             error(ERR_FILE);
-
         }
+
     }while (!fr.is_open());
+
     for (unsigned int i = 0; i<D.questions.size(); i++) {
         if (D.questions[i].answer.empty()) {
             fr << D.questions[i].unit << "|"<< D.questions[i].question<<endl;
-        
         }else {
             fr << D.questions[i].unit << "|"<< D.questions[i].question<<"|"<<D.questions[i].answer<<endl;
         }
     }
+
     fr.close();
 }
+
 // Función principal. Tendrás que añadir más código tuyo
 int main(int argc, char *argv[]) {
     Database data;
@@ -574,7 +588,7 @@ int main(int argc, char *argv[]) {
 
                 break;
             case '5': // Llamar a la función "addAnswers" para añadir respuestas a las preguntas
-                      data = addAnswers(&data);
+                      data = addAnswers(data);
                 break;
             case '6': // Llamar a la función "viewAnswers" para mostrar las preguntas con sus respuestas
                       viewAnswers(data);
