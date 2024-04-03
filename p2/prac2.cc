@@ -9,6 +9,8 @@
 using namespace std;
 
 #define TEACHERFILE "teachers.bin"
+#define FFLAG "-f"
+#define SFLAG "-s"
 
 const int KMAXNAME = 50;
 const int KMAXPASSWORD = 5;
@@ -135,22 +137,25 @@ void showMenu() {
  * */
 struct database addQuestion(struct database D){
     string unit, question; 
-    int unitNumber;
+    int  unitNumber; // podría ser short pero me fio 0 del corrector
     bool barra;
     struct question Q;
 
     do{
         cout << "Enter unit: ";
         getline(cin, unit);
+
         if(unit.empty()){
             error(ERR_EMPTY);
             return D;
         }
+
         unitNumber = atoi(unit.c_str());
+
         if(unitNumber>5 || unitNumber<1){
             error(ERR_UNIT);
-
         }
+
     }while(unitNumber>5 || unitNumber<1);
 
     do {
@@ -182,6 +187,97 @@ struct database addQuestion(struct database D){
 
     return D;
 }
+struct database readFromFile(ifstream *fr, struct database D){
+    string s, answer, question;
+    int unsigned count = 0, emptyCount= 0, posBlanco;
+    int countCorrectly = 0, unit;
+    bool  blanco;
+
+    while(getline(*fr, s)){
+        blanco = true;
+        count++;
+
+
+        if(s.empty()){
+            emptyCount++;
+            continue;
+        }
+
+        for (unsigned int i = 0; i<s.size() && blanco; i++) {
+            if (s[i]!=' ') {
+                posBlanco = i;
+                blanco = false;
+            }
+        }
+        s.erase(0,posBlanco);
+
+        // num|question|answer
+        if(atoi(s.substr(0,s.find('|')).c_str())>5 || atoi(s.substr(0,s.find('|')).c_str())<1){
+            cout << "Error line "<< count <<endl;
+            continue;
+        }
+
+        unit = atoi(s.substr(0,s.find('|')).c_str());
+
+        s.erase(0,s.find('|')+1);
+        // question|answer
+
+        // usar find
+        // for (unsigned i = 0;noguion && i<s.size(); i++) {
+        //     if(s[i]=='|'){
+        //         pos = i;
+        //         noguion =false;
+        //     }
+        // }
+
+
+        if (string::npos==s.find_first_of('|')) {
+            //cout << "pregunta: "<<s <<endl;
+            // question
+            if (s.empty()) {
+                cout << "Error line "<< count <<endl;
+                continue;
+            }
+
+            question = s;
+            D.questions.push_back(ponerCuestion(question, "", unit, D.nextid+countCorrectly));
+            countCorrectly++;
+
+        }else {
+
+            //cout <<"pregunta y respuesta:" <<s <<endl;
+            question = s.substr(0, s.find_first_of('|'));
+
+            if (question.empty()) {
+                cout << "Error line "<< count <<endl;
+                continue;
+            }
+
+            s.erase(0, s.find_first_of('|')+1);
+
+            //cout <<"respuesta:" <<s <<endl;
+            if (s.empty()) {
+                cout << "Error line "<< count <<endl;
+                continue;
+            }
+
+            if (string::npos!=s.find_first_of('|')) {
+                cout << "Error line "<< count <<endl;
+                continue;
+            }
+
+            answer = s;
+            D.questions.push_back(ponerCuestion(question, answer, unit, D.nextid+countCorrectly));
+            countCorrectly++;
+        }
+    }
+
+    D.nextid += countCorrectly;
+    cout << "Summary: " << countCorrectly<< "/"<< count-emptyCount<< " questions added"<< endl;
+    fr->close();
+    return D;
+
+}
 
 /*
  * funcion batchAddQuestion, se encarga de manejar la opcion 2 del menú
@@ -190,80 +286,31 @@ struct database addQuestion(struct database D){
  * return struct database
  * */
 struct database batchAddQuestion(struct database D){
-    string name, s, answer, question;
-    int unsigned count = 0, pos = 0, emptyCount= 0;
-    int countCorrectly = 0, unit;
-    bool noguion = true;
+    string name;
     ifstream fr;
 
     do {
         cout << "Enter filename: "; 
         getline(cin, name);
+
         if (name.empty()) {
             error(ERR_EMPTY);
             return D;
         }
+
         fr.open(name);
+
         if (!fr.is_open()) {
             error(ERR_FILE);
         
         }
     }while (!fr.is_open());
 
-    while(getline(fr, s)){
-        count++;
+    return readFromFile(&fr, D);
 
-        noguion = true;
-
-        if(s.empty()){
-            emptyCount++;
-            continue;
-        }
-
-        // TODO hay qeu cambiar el algoritmo por uno que permita espacios (move a otra función)
-
-        if(atoi(s.substr(0,1).c_str())>5 || atoi(s.substr(0,1).c_str())<1){
-            cout << "Error line "<< count <<endl;
-            continue;
-        }
-
-        unit = stoi(s.substr(0,s.find('|')));
-
-        s.erase(0,s.find('|')+1);
-
-        for (unsigned i = 0;noguion && i<s.size(); i++) {
-            if(s[i]=='|'){
-                pos = i;
-                noguion =false;
-            }
-        }
-
-
-        if (!noguion) {
-            if (pos == s.size()-1 || pos == 0)  {
-                cout << "Error line "<< count <<endl;
-                continue;
-            }
-
-            question = s.substr(0, pos);
-            s.erase(0, pos+1);
-            answer = s;
-
-            D.questions.push_back(ponerCuestion(question, answer, unit, D.nextid+countCorrectly));
-            countCorrectly++;
-        }else {
-            question = s;
-            D.questions.push_back(ponerCuestion(question, "", unit, D.nextid+countCorrectly));
-            countCorrectly++;
-        }
-    }
-
-    D.nextid += countCorrectly;
-    cout << "Summary: " << countCorrectly<< "/"<< count-emptyCount<< " questions added"<< endl;
-    fr.close();
-    return D;
 
 }
+
 
 /*
  * función deleteQuestion se encarga de manejar la opción 3 del menú
@@ -277,6 +324,8 @@ struct database deleteQuestion(struct database D){
     bool found;
 
     do {
+        found = false;
+
         cout << "Enter question id: ";
         getline(cin, aux);
 
@@ -286,13 +335,14 @@ struct database deleteQuestion(struct database D){
         }
 
         index = atoi(aux.c_str());
-        found = false;
+
         for (unsigned int i = 0; i< D.questions.size(); i++) {
             if(index == D.questions[i].id){
                 pos = i;
                 found = true;
             }
         }
+
         if (!found) {
             error(ERR_ID);
         }
@@ -371,7 +421,7 @@ string encr(string s){
  * paráemtros struct database
  * return struct teacher
  * */
-struct teacher addTeacher(struct database D){
+struct database addTeacher(struct database D){
     string s, passwrd;
     bool noalfab, tam ,dup, err;
     struct teacher T;
@@ -383,33 +433,37 @@ struct teacher addTeacher(struct database D){
 
         cout << "Enter teacher name: ";
         getline(cin, s);
+
         if (s.empty()) {
             error(ERR_EMPTY);
-            return T;
+            return D;
         }
 
 
         for (unsigned int i = 0; i<s.length() && !noalfab; i++) {
             if (!isalpha(s[i]) && s[i]!=' ') {
                 noalfab = true;
-                error(ERR_NAME);
             }
         }
 
-        s= quitarEspBlanco(s);
+        s = quitarEspBlanco(s);
 
         if (3>s.length() || s.length()> KMAXNAME-1) {
-            error(ERR_NAME);
             tam = true;
         }
+
         for (unsigned int i = 0; i<D.teachers.size(); i++) {
             if (s == D.teachers[i].name) {
-                error(ERR_DUPLICATED);
                 dup = true;
             }
         }
 
-        //cout << s << noalfab << tam << dup;
+        if (dup) {
+            error(ERR_DUPLICATED);
+        }else if (tam || noalfab) {
+            error(ERR_NAME);
+        }
+
     }while (noalfab || tam || dup);
     
     do {
@@ -420,7 +474,7 @@ struct teacher addTeacher(struct database D){
 
         if (passwrd.empty()) {
             error(ERR_EMPTY);
-            return T;
+            return D;
         }
 
         for (unsigned int i = 0; i<passwrd.length(); i++) {
@@ -428,18 +482,23 @@ struct teacher addTeacher(struct database D){
                 err = true;
             }
         }
-        if (passwrd.length()!=4) {
-            error(ERR_PASSWORD);
-            err =true;
 
+        if (passwrd.length()!=4) {
+            err =true;
         }
+
+        if (err) {
+            error(ERR_PASSWORD);
+        }
+
     }while (err);
 
     passwrd = encr(passwrd);
     strcpy(T.name, s.c_str());
     strcpy(T.password, passwrd.c_str());
     T.answered = 0;
-    return T;
+    D.teachers.push_back(T);
+    return D;
 }
 
 /*
@@ -448,14 +507,22 @@ struct teacher addTeacher(struct database D){
  * return struct database 
  * */
 struct database addAnswers(struct database D){
+
     string teacherName, password, questionId, answer;
-    unsigned int positionTeacher, count = 0;
+    unsigned int positionTeacher = 0, count = 0, posId;
     bool found, auth;
 
     do {
         found = false;
+
         cout << "Enter teacher name: ";
         getline(cin, teacherName);
+
+        if (teacherName.empty()) {
+            error(ERR_EMPTY);
+            return D;
+        }
+
         for (unsigned int i = 0; i<D.teachers.size(); i++) {
             if (D.teachers[i].name == teacherName) {
                 found = true;
@@ -463,30 +530,28 @@ struct database addAnswers(struct database D){
             }
         }
 
-        if (teacherName.empty()) {
-            error(ERR_EMPTY);
-            return D;
-        }
         if (!found) {
             error(ERR_NAME);
         }
-
     }while (!found);
 
     do {
         auth = false;
+
         cout << "Enter password: ";
         getline(cin, password);
-        password = encr(password);
-        auth = (password==D.teachers[positionTeacher].password);
+
         if (password.empty()) {
             error(ERR_EMPTY);
             return D;
         }
+
+        password = encr(password);
+        auth = (password==D.teachers[positionTeacher].password);
+
         if (!auth) {
             error(ERR_PASSWORD);
         }
-
     }while(!auth);
 
     do {
@@ -497,6 +562,11 @@ struct database addAnswers(struct database D){
                 cout << D.questions[i].id << ". (" << D.questions[i].unit << ") " <<D.questions[i].question <<endl;
                 count++;
             }
+        }
+
+        if (count == 0) {
+            error(ERR_NO_QUESTIONS);
+            return D;
         }
 
         do {
@@ -510,10 +580,6 @@ struct database addAnswers(struct database D){
                 return D;
             }
 
-            if (count ==0) {
-                error(ERR_NO_QUESTIONS);
-                return D;
-            }
             if (questionId.empty()) {
                 error(ERR_EMPTY);
                 return D;
@@ -522,13 +588,14 @@ struct database addAnswers(struct database D){
             for (unsigned int i = 0; i<D.questions.size(); i++) {
                 if (D.questions[i].id == (unsigned int) atoi(questionId.c_str())) {
                     found = true;
+                    posId = i;
+
                 }
             }
 
             if (!found) {
                 error(ERR_ID);
             }
-
         }while (!found);
 
         do {
@@ -547,15 +614,11 @@ struct database addAnswers(struct database D){
 
         }while(answer.find_first_of('|')!=string::npos);
 
-        // debugging stuff
-        // cout << "Llego a guardar"<<endl;
-
-        // esto no guarda por algun tipo de razón
-        D.questions[atoi(questionId.c_str())].answer = answer;
+        D.questions[posId].answer = answer;
+        D.teachers[positionTeacher].answered++;
 
     }while (count !=0);
 
-    // nunca debería llegar aqui (preguntar en clase sobre la mala practica de salir con un return en el caso de la "b")
     return D;
 }
 
@@ -592,14 +655,19 @@ void viewStatistics(struct database D){
         cout << D.teachers[i].name<< ": "<< D.teachers[i].answered<< endl;
     }
 }
-
+/*
+ * función exportQuestions se encarga de exportar las cuestiones en el archivo que le indiques
+ * parámetros struct database 
+ * */
 void exportQuestions(struct database D){
     string filename;
     ofstream fr;
 
     do {
+
         cout << "Enter filename: ";
         getline(cin, filename);
+
         if (filename.empty()) {
             error(ERR_EMPTY);
             return;
@@ -610,7 +678,6 @@ void exportQuestions(struct database D){
         if (!fr.is_open()) {
             error(ERR_FILE);
         }
-
     }while (!fr.is_open());
 
     for (unsigned int i = 0; i<D.questions.size(); i++) {
@@ -660,16 +727,133 @@ vector<teacher> loadTeachers(){
 
     
 }
+/*
+ * función handlArgs se encarga de manejar los argumentos
+ * parámetros 
+ * struct database * 
+ * int numArgs
+ * char ** args
+ * return
+ * 1 => argumentos inválidos
+ * 2 => argumento para cerrar el programa
+ * 0 => argumento para continuar con el programa
+ * */
+int handlArgs(struct database *D, int numArgs, char** args){
+    string parameter, fileName;
+    ifstream fr;
+
+    if (numArgs >4) {
+        // se pasa de argumentos
+        return 1;
+    }else if (numArgs == 1) {
+        // no hay argumentos
+        return 0;
+    }
+
+    switch (numArgs) {
+        case 2:
+
+            if (strcmp(args[1], SFLAG)==0) {
+                // está el -s
+                viewStatistics(*D);
+                return 2;
+
+            }else {
+                // no está en el único parámetro que hay
+                return 1;
+            }
+
+            break;
+        case 3:
+
+            // dos parámetros
+            if (strcmp(args[1], FFLAG) == 0) {
+                fileName = args[2];
+
+                fr.open(fileName);
+
+                if (fr.is_open()) {
+                    *D = readFromFile(&fr, *D);
+                }else {
+                    error(ERR_FILE);
+                }
+
+                return 0;
+            }else {
+                // no tiene sentido que no esté el -f al principio cuando solo hay 2 parámetros 
+                return 1;
+            }
+
+            break;
+        case 4:
+
+            // tres parámetros 
+            // el -f solo puede estar en las posiciones 1 o 2
+            // y el -s solo puede estar en las posiciónes 3 o 1
+            if (strcmp(args[1], FFLAG)==0) {
+                if (strcmp(args[3], SFLAG)!=0) {
+                    // -f loquesea no-s (combinación inválida)
+                    return 1;
+                }else {
+                    fileName = args[2];
+
+                    fr.open(fileName);
+
+                    if (fr.is_open()) {
+                        *D = readFromFile(&fr, *D);
+                    }else {
+                        error(ERR_FILE);
+                    }
+
+                    viewStatistics(*D);
+                    return 2;
+
+                }
+            }else if (strcmp(args[2] , FFLAG) ==0) {
+                if (strcmp(args[1], SFLAG)!=0) {
+                    // no-s -f loquesea (combinación inválida)
+                    return 1;
+                }else {
+                    fileName = args[3];
+
+                    fr.open(fileName);
+
+                    if (fr.is_open()) {
+                        *D = readFromFile(&fr, *D);
+                    }else {
+                        error(ERR_FILE);
+                    }
+                    viewStatistics(*D);
+                    return 2;
+                }
+            }
+
+            break;
+    }
+
+    return 1;
+
+
+}
+
 
 // Función principal. Tendrás que añadir más código tuyo
 int main(int argc, char *argv[]) {
-    database data;
+    struct database data;
     data.nextid=1;
     char option;
-    struct teacher t;
 
-    data.teachers =loadTeachers();
+    data.teachers = loadTeachers();
 
+    switch (handlArgs( &data, argc, argv) ) {
+        case 1:
+            error(ERR_ARGS);
+            return 1;
+            break;
+        case 2:
+            return 1;
+            break;
+    }
 
     do{
         showMenu();
@@ -687,8 +871,7 @@ int main(int argc, char *argv[]) {
                       data = deleteQuestion(data);
                 break;
             case '4': // Llamar a la función "AddTeacher" para añadir un nuevo profesor
-                       t = addTeacher(data);
-                       data.teachers.push_back(t);
+                       data = addTeacher(data);
                 break;
             case '5': // Llamar a la función "addAnswers" para añadir respuestas a las preguntas
                       data = addAnswers(data);

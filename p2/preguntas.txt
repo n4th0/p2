@@ -1,0 +1,10 @@
+1|is designing on paper worth nowadays?|Yes, it is, or instead, in microsoft paint 
+1|is cli better than the gui?|If you are fast enough typing, yes
+2|is using strings the best way to handle keyboard inputs?|In most of the cases yes
+2|?|
+3|?|
+3|?|
+4|?|
+4|?|
+5|?|
+5|?|
