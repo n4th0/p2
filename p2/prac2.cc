@@ -39,7 +39,7 @@ struct database{
 };
 
 // Tipos de errores posibles
-enum Error {
+enum error {
     ERR_OPTION,
     ERR_EMPTY,
     ERR_UNIT,
@@ -57,7 +57,7 @@ enum Error {
 e: tipo de error a mostrar
 return: nada
 */
-void error(Error e){
+void error(error e){
     switch (e){
         case ERR_OPTION:
             cout << "ERROR: wrong option" << endl;
@@ -356,23 +356,49 @@ struct database deleteQuestion(struct database D){
 /*función quitarEspBlanco
  * se encarga de quitarle los espacios en blanco al nombre del profesor
  * en la función addTeacher
- * parámetros string s
- * return string 
+ * parámetros string * s
  * */
 string quitarEspBlanco(string s){
     int i = 0;
-    while (s[i]==' ') {
-        i++;
+
+    for(unsigned j = 0; j<s.length(); j++) {
+        if (s[j] != ' ' ) {
+            i = j;
+            // se que es mala práctica pero son las 3 de la mañana y no quiero poner
+            // una variable extra
+            break;
+        }
+
+        if (j == s.length()-1) {
+            i = s.length();
+        }
     }
+
     s.erase(0, i);
-    i = s.length()-1;
-    while (s[i]==' ') {
-        i--;
+
+    if (s.empty()) {
+        // cualquier cosa que haga que salten el error
+        return "a";
     }
-    //cout << i << endl; // debuggin stuff
+
+    i = s.length()-1;
+
+    for (unsigned int j = s.length()-1; j>=0; j--) { 
+        if (s[j]!=' ') {
+            i = j;
+            break;
+        }
+    }
+
     s.erase(i+1, s.length()-i);
 
+    if (s.empty()) {
+        // cualquier cosa que haga que salten el error
+        return "a";
+    }
+
     return s;
+
 }
 
 /*función encr, se encarga de encriptar las constraseñas
@@ -423,13 +449,14 @@ string encr(string s){
  * */
 struct database addTeacher(struct database D){
     string s, passwrd;
-    bool noalfab, tam ,dup, err;
+    bool noalfab, tam ,dup, err, empty;
     struct teacher T;
 
     do {
         noalfab = false;
         tam = false;
         dup = false;
+        empty = false;
 
         cout << "Enter teacher name: ";
         getline(cin, s);
@@ -448,23 +475,28 @@ struct database addTeacher(struct database D){
 
         s = quitarEspBlanco(s);
 
-        if (3>s.length() || s.length()> KMAXNAME-1) {
-            tam = true;
-        }
+        if (s.empty()) {
+            empty = true;
+        }else {
+        
+            if (3>s.length() || s.length()> KMAXNAME-1) {
+                tam = true;
+            }
 
-        for (unsigned int i = 0; i<D.teachers.size(); i++) {
-            if (s == D.teachers[i].name) {
-                dup = true;
+            for (unsigned int i = 0; i<D.teachers.size(); i++) {
+                if (s == D.teachers[i].name) {
+                    dup = true;
+                }
             }
         }
 
         if (dup) {
             error(ERR_DUPLICATED);
-        }else if (tam || noalfab) {
+        }else if (tam || noalfab || empty) {
             error(ERR_NAME);
         }
 
-    }while (noalfab || tam || dup);
+    }while (noalfab || tam || dup  || empty);
     
     do {
         err= false;
@@ -483,7 +515,7 @@ struct database addTeacher(struct database D){
             }
         }
 
-        if (passwrd.length()!=4) {
+        if (passwrd.length()!=KMAXPASSWORD-1) {
             err =true;
         }
 
@@ -691,6 +723,10 @@ void exportQuestions(struct database D){
     fr.close();
 }
 
+/*
+ * función storeTeachers se encarga de guardar los profesores en un binario
+ * parámetros: struct database
+ * */
 void storeTeachers(struct database D){
     ofstream file;
     file.open(TEACHERFILE,ios::binary);
@@ -727,6 +763,7 @@ vector<teacher> loadTeachers(){
 
     
 }
+
 /*
  * función handlArgs se encarga de manejar los argumentos
  * parámetros 
