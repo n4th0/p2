@@ -203,6 +203,11 @@ struct database readFromFile(ifstream *fr, struct database D){
             continue;
         }
 
+        if (string::npos==s.find_first_of('|')){
+            cout << "Error line "<< count <<endl;
+            continue;
+        } 
+
         for (unsigned int i = 0; i<s.size() && blanco; i++) {
             if (s[i]!=' ') {
                 posBlanco = i;
@@ -528,6 +533,8 @@ struct database addTeacher(struct database D){
     passwrd = encr(passwrd);
     strcpy(T.name, s.c_str());
     strcpy(T.password, passwrd.c_str());
+    T.name[KMAXNAME-1]='\0';
+    T.password[KMAXPASSWORD-1]='\0';
     T.answered = 0;
     D.teachers.push_back(T);
     return D;
@@ -740,6 +747,7 @@ void storeTeachers(struct database D){
         file.write((const char*)&D.teachers[i], sizeof(struct teacher));
     }
 
+
     file.close();
 }
 
@@ -756,12 +764,10 @@ vector<teacher> loadTeachers(){
     if (file.is_open()) {
         while (file.read((char*)&t, sizeof(struct teacher))) {
             Teachers.push_back(t);
-        
         }
     }
-    return Teachers;
 
-    
+    return Teachers;
 }
 
 /*
@@ -869,8 +875,6 @@ int handlArgs(struct database *D, int numArgs, char** args){
     }
 
     return 1;
-
-
 }
 
 
