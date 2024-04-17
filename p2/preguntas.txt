@@ -1,10 +1,10 @@
-1|is designing on paper worth nowadays?|Yes, it is, or instead, in microsoft paint 
-1|is cli better than the gui?|If you are fast enough typing, yes
-2|is using strings the best way to handle keyboard inputs?|In most of the cases yes
-2|?|
-3|?|
-3|?|
-4|?|
-4|?|
-5|?|
-5|?|
+1|Is designing on paper worth nowadays?|Yes, it is
+1|How should I compile my project?|Using -g and -Wall flags
+2|Is using strings the best way to handle keyboard inputs?|In most of the cases yes
+2|How is the syntax of strncpy?| Is strncpy(first char array, second char array, number of chars)
+3|How many tipes of files exist?| Exists 2 types, text files and binary files
+3|Should I close a file?| Yes, using the method .close()
+4|Wich are the operators to handle pointers?| They are * and &
+4|How do I allocate a int using pointers?| You should allocate it using "int *pointer = new int"
+5|Can we see private data from an object?| No, we cannot see it, but if that object has a getter we can get that data
+5|Wich are the methods that every class must implement?|They are constructor, destructor, copy constructor and assignment operator
