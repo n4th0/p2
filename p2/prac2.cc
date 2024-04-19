@@ -95,7 +95,7 @@ void error(error e){
 }
 
 /*
- * constructor del struct question  
+ * "constructor" del struct question  
  * parámetros:
  * string question
  * string answer
@@ -187,6 +187,14 @@ struct database addQuestion(struct database D){
 
     return D;
 }
+
+/*
+ * funcion readFromFile, se encarga de leer un archivo de texto
+ * plano
+ * parámetros:
+ * puntero ifstream, structo database
+ * return: struct database
+ * */
 struct database readFromFile(ifstream *fr, struct database D){
     string s, answer, question;
     int unsigned count = 0, emptyCount= 0, posBlanco;
@@ -315,7 +323,6 @@ struct database batchAddQuestion(struct database D){
 
 
 }
-
 
 /*
  * función deleteQuestion se encarga de manejar la opción 3 del menú
@@ -694,6 +701,7 @@ void viewStatistics(struct database D){
         cout << D.teachers[i].name<< ": "<< D.teachers[i].answered<< endl;
     }
 }
+
 /*
  * función exportQuestions se encarga de exportar las cuestiones en el archivo que le indiques
  * parámetros struct database 
