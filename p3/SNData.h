@@ -1,3 +1,6 @@
+#ifndef _SNDATA_H_
+#define _SNDATA_H_
+
 #include <iostream>
 #include <vector>
 
@@ -18,3 +21,4 @@ class SNData{
     double getAvgMonetizing(std::string name);
 
 };
+#endif

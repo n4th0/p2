@@ -1,7 +1,7 @@
-#include <exception>
-#include <iostream>
-#include <string>
 #include "SNData.h"
+
+#include <exception>
+#include <string>
 
 using namespace std;
 

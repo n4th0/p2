@@ -1,4 +1,8 @@
+#ifndef _AGENCY_H_
+#define _AGENCY_H_
+
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 #include "Influencer.h"
@@ -19,5 +23,7 @@ class Agency{
     double collectCommissions();
     std::string getName() const;
     double getMoney() const;
-    // TODO implement the operator
+    friend std::ostream& operator<<(std::ostream &os, const Agency &ag);
 };
+
+#endif

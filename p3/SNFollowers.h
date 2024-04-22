@@ -1,3 +1,6 @@
+#ifndef _SNFOLLOWERS_H_
+#define _SNFOLLOWERS_H_
+
 #include <iostream>
 #include <vector>
 
@@ -14,7 +17,7 @@ class SNFollowers{
     std::string getName() const;
     int getNumFollowers() const;
     double getMoney() const;
-    // TODO implement the operator
-
+    friend std::ostream& operator<<(std::ostream &os, const SNFollowers &snf);
 };
 
+#endif

@@ -1,3 +1,5 @@
+#ifndef _INFLUENCER_H_
+#define _INFLUENCER_H_
 
 #include <iostream>
 #include <vector>
@@ -17,7 +19,8 @@ class Influencer{
     std::string getName() const;
     std::vector<SNFollowers> getFollowers() const;
     double getCommission() const;
-    // TODO implement the operator
+    friend std::ostream & operator<<(std::ostream &os, const Influencer &inf);
 
 };
 
+#endif
