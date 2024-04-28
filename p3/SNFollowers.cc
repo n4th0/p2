@@ -10,8 +10,6 @@ SNFollowers::SNFollowers(std::string name, int initialFollowers){
     // están duplicados?
 
     SNFollowers::name = name;
-
-
 }
 
 void SNFollowers::addFollowers(int nf){
@@ -46,7 +44,6 @@ double SNFollowers::collectCommission(double commission){
 
 std::string SNFollowers::getName() const{
     return SNFollowers::name;
-
 }
 
 int SNFollowers::getNumFollowers() const{
