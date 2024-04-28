@@ -13,12 +13,12 @@ struct SocialNetworkData{
 
 class SNData{
   private:
-    std::vector<SocialNetworkData> sns;
+    static std::vector<SocialNetworkData> sns;
   public:
-    void newSocialNetwork(std::string name, double avgR, double avgM);
-    bool checkSN(std::string name);
-    double getAvgRating(std::string name);
-    double getAvgMonetizing(std::string name);
+    static void newSocialNetwork(std::string name, double avgR, double avgM);
+    static bool checkSN(std::string name);
+    static double getAvgRating(std::string name);
+    static double getAvgMonetizing(std::string name);
 
 };
 #endif
