@@ -1,15 +1,23 @@
 
+#include "SNData.h"
 #include "SNFollowers.h"
-// #include "SNData.h" (así es como accedo a la base de datos??) 
+#include "Util.h"
+#include <stdexcept>
 #include <string>
 using namespace std;
 
 SNFollowers::SNFollowers(std::string name, int initialFollowers){
 
-    // TODO como carajos, como carajos accedo al struct SNData para obtener los que 
-    // están duplicados?
+    if(SNData::checkSN(name)){
+        throw EXCEPTION_UNKNOWN_SN;
+    }
 
-    SNFollowers::name = name;
+    if (initialFollowers < 0 ) {
+        throw invalid_argument(to_string(initialFollowers));
+    }
+
+    this->name = name;
+    this->numFollowers = initialFollowers;
 }
 
 void SNFollowers::addFollowers(int nf){
@@ -22,11 +30,25 @@ void SNFollowers::addFollowers(int nf){
 }
 
 void SNFollowers::addEvent(double rating){
+    // TODO comprobar la función
+    double relat;
     if (rating < 0) {
-        throw exception(invalid_argument(to_string(rating)));
+        throw invalid_argument(to_string(rating));
     }
 
-    // TODO como accedo a la base de datos??
+    relat =rating/SNData::getAvgRating(this->name);
+
+    if( relat > 0.8){ // 0.8 debería ser constante
+        this->addFollowers((int) this->numFollowers*relat);
+
+        // dudo mucho que se pueda hacer esto TODO (money stuff )
+        this->money = this->money + ((int) this->numFollowers*relat);
+
+    }else {
+        this->addFollowers((int) this->numFollowers*(0.9 - relat));
+    
+    }
+
 
 }
 
@@ -34,11 +56,11 @@ double SNFollowers::collectCommission(double commission){
     double a;
 
     if (commission<0 || commission>1) {
-        throw exception(invalid_argument(to_string(commission)));
+        throw invalid_argument(to_string(commission));
     }
     
     a = commission * SNFollowers::money;
-    SNFollowers::money = 0;
+    this->money = 0;
     return a;
 }
 

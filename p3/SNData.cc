@@ -1,6 +1,5 @@
 #include "SNData.h"
-
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 using namespace std;
@@ -9,31 +8,29 @@ void SNData::newSocialNetwork(string name, double avgR, double avgM){
     struct SocialNetworkData snd;
 
     if (checkSN(name)) {
-        throw exception(invalid_argument(name));
+        throw invalid_argument(name);
     }
 
     if (avgR<0 || avgR>1) {
-        throw exception(invalid_argument(to_string(avgR)));
+        throw invalid_argument(to_string(avgR));
     }
 
     if (avgM<0 || avgM>1) {
-        throw exception(invalid_argument(to_string(avgM)));
+        throw invalid_argument(to_string(avgM));
     }
 
-    snd.name= name;
+    snd.name = name;
     snd.averageMonetizing= avgM;
     snd.averageRating= avgR;
 
-    SNData::sns.push_back(snd);
-
+    sns.push_back(snd);
 
 }
 
 bool SNData::checkSN(std::string name){
-
     bool found = false;
-    for(unsigned int i = 0; i<SNData::sns.size(); i++){
-        if (SNData::sns[i].name == name) {
+    for(unsigned int i = 0; i<sns.size(); i++){
+        if (sns[i].name == name) {
             found = true;
         }
     }
@@ -42,10 +39,9 @@ bool SNData::checkSN(std::string name){
 }
 
 double SNData::getAvgRating(std::string name){
-
-    for(unsigned int i = 0; i<SNData::sns.size(); i++){
-        if (SNData::sns[i].name == name) {
-            return SNData::sns[i].averageRating;
+    for(unsigned int i = 0; i<sns.size(); i++){
+        if (sns[i].name == name) {
+            return sns[i].averageRating;
         }
     }
     return 0.0;
@@ -53,10 +49,9 @@ double SNData::getAvgRating(std::string name){
 }
 
 double SNData::getAvgMonetizing(std::string name){
-
-    for(unsigned int i = 0; i<SNData::sns.size(); i++){
-        if (SNData::sns[i].name == name) {
-            return SNData::sns[i].averageMonetizing;
+    for(unsigned int i = 0; i<sns.size(); i++){
+        if (sns[i].name == name) {
+            return sns[i].averageMonetizing;
         }
     }
     return 0.0;
