@@ -60,17 +60,18 @@ void Agency::addFollowers(std::string infName, std::string snName, int nfollower
 
     try {
         Influencer *i = seachInfluencer(infName);
-        std::cout << "llego aqui"<<std::endl;
+        // std::cout << "llego aqui"<<std::endl;
         i->addFollowers(snName, nfollowers);
-        std::cout << "llego aqui 2"<<std::endl;
+        // std::cout << "llego aqui 2"<<std::endl;
 
     } catch (Exception e) {
-        std::cout << "llego aqui 3"<<std::endl;
+        // std::cout << "llego aqui 3"<<std::endl;
         if (e == EXCEPTION_INFL_NOT_FOUND) {
-            std::cout << "llego aqui 4"<<std::endl;
+            // std::cout << "llego aqui 4"<<std::endl;
             Util::error(ERR_NOT_FOUND);
             return;
         }
+
     }
 
 }
@@ -79,7 +80,7 @@ void Agency::newEvent(std::vector<std::string> infNames, int nsns, std::string s
 
     Influencer *inf;
     for (unsigned int i = 0; i<infNames.size(); i++) {
-        // utilizar esto como if me parece criminal
+
         try {
             inf = this->seachInfluencer(infNames[i]);
             inf->addEvent(nsns, snNames, evtRatings);

@@ -23,30 +23,38 @@ void Influencer::setCommission(double commission){
 
 void Influencer::addFollowers(std::string snName, int nfollowers){
 
-    std::cout <<"llego aqui fn1 1"<<std::endl;
+    // std::cout <<"llego aqui fn1 1"<<std::endl;
+
     if(!SNData::checkSN(snName)){
-        std::cout <<"llego aqui fn1 2"<<std::endl;
+
+        // std::cout <<"llego aqui fn1 2"<<std::endl;
         try {
             SNFollowers seguidores(snName, nfollowers);
-            std::cout <<"llego aqui fn1 3"<<std::endl;
+
+            // std::cout <<"llego aqui fn1 3"<<std::endl;
             this->followers.push_back(seguidores);
 
         } catch (Exception e) {
             if(e == EXCEPTION_UNKNOWN_SN){
-                std::cout <<"llego aqui fn1 4"<<std::endl;
+                // std::cout <<"llego aqui fn1 4"<<std::endl;
                 Util::error(ERR_UNKNOWN_SN);
                 return; // creo que esto no hace falta
             }
         }
 
     }else {
-        this->addFollowers(snName, nfollowers);
+        for (unsigned int i = 0; i<this->followers.size(); i++) {
+            if (snName == this->followers[i].getName()) {
+                followers[i].addFollowers(nfollowers);
+            }
+        }
     }
 
 }
 
 void Influencer::addEvent(int nsns, std::string sn[], double rat[]){
-    for (unsigned int i = 0; this->followers.size(); i++) {
+
+    for (unsigned int i = 0; i<this->followers.size(); i++) {
         for (int j = 0; j<nsns; j++) {
             if (sn[j] ==  this->followers[i].getName()) {
                 this->followers[i].addFollowers(rat[j]);

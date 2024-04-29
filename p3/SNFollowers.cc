@@ -7,8 +7,7 @@
 using namespace std;
 
 SNFollowers::SNFollowers(std::string name, int initialFollowers){
-
-    if(SNData::checkSN(name)){
+    if(!SNData::checkSN(name)){
         throw EXCEPTION_UNKNOWN_SN;
     }
 
@@ -63,15 +62,15 @@ double SNFollowers::collectCommission(double commission){
 }
 
 std::string SNFollowers::getName() const{
-    return SNFollowers::name;
+    return this->name;
 }
 
 int SNFollowers::getNumFollowers() const{
-    return SNFollowers::numFollowers;
+    return this->numFollowers;
 }
 
 double SNFollowers::getMoney() const{
-    return SNFollowers::money;
+    return this->money;
 }
 
 std::ostream& operator<<(std::ostream &os, const SNFollowers &snf){

@@ -29,11 +29,14 @@ void SNData::newSocialNetwork(string name, double avgR, double avgM){
 
 bool SNData::checkSN(std::string name){
     bool found = false;
+    // std::cout << "llego aqui fn2 1"<< std::endl;
     for(unsigned int i = 0; i<sns.size(); i++){
         if (sns[i].name == name) {
+            // std::cout << "llego aqui fn2 2"<< std::endl;
             found = true;
         }
     }
+    // std::cout << "llego aqui fn2 3"<< std::endl;
     return found;
 
 }
