@@ -20,8 +20,8 @@ void SNData::newSocialNetwork(string name, double avgR, double avgM){
     }
 
     snd.name = name;
-    snd.averageMonetizing= avgM;
-    snd.averageRating= avgR;
+    snd.averageMonetizing = avgM;
+    snd.averageRating = avgR;
 
     sns.push_back(snd);
 

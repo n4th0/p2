@@ -2,8 +2,8 @@
 #include "coordenada.h"
 
 Coordenada::Coordenada(float cx, float cy){
-    Coordenada::x=cx;
-    Coordenada::y=cy;
+    this->x=cx;
+    y=cy;
 
 }
 
@@ -28,16 +28,16 @@ float Coordenada::getX() const{
 }
 
 float Coordenada:: getY() const{
-    return Coordenada::y;
+    return y;
 }
 
 void Coordenada::setX(float cx){
-    Coordenada::x=cx;
+    this->x = cx;
     return;
 }
 
 void Coordenada::setY(float cy){
-    Coordenada::y=cy;
+    y=cy;
     return;
 }
 

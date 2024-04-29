@@ -4,7 +4,7 @@
 class Coordenada{
     private:
         float x;
-        float y;
+        static float y;
     public:
         Coordenada(float cx=0, float cy=0);
         Coordenada();
