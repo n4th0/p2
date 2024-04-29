@@ -18,9 +18,7 @@ class SNData{
     static bool checkSN(std::string name); 
     static double getAvgRating(std::string name);
     static double getAvgMonetizing(std::string name);
-
 };
 
-std::vector<struct SocialNetworkData> SNData::sns;
 
 #endif

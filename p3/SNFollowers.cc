@@ -21,27 +21,25 @@ SNFollowers::SNFollowers(std::string name, int initialFollowers){
 }
 
 void SNFollowers::addFollowers(int nf){
-    SNFollowers::numFollowers = SNFollowers::numFollowers + nf;
+    this->numFollowers = this->numFollowers + nf;
 
-    if (SNFollowers::numFollowers <0) {
-        SNFollowers::numFollowers = 0;
+    if (this->numFollowers <0) {
+        this->numFollowers = 0;
     }
 
 }
 
 void SNFollowers::addEvent(double rating){
-    // TODO comprobar la función
     double relat;
     if (rating < 0) {
         throw invalid_argument(to_string(rating));
     }
 
-    relat =rating/SNData::getAvgRating(this->name);
+    relat = rating/SNData::getAvgRating(this->name);
 
     if( relat > 0.8){ // 0.8 debería ser constante
         this->addFollowers((int) this->numFollowers*relat);
 
-        // dudo mucho que se pueda hacer esto TODO (money stuff )
         this->money = this->money + ((int) this->numFollowers*relat);
 
     }else {

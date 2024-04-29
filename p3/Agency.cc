@@ -26,22 +26,31 @@ Influencer * Agency::seachInfluencer(std::string infName){
         throw EXCEPTION_INFL_NOT_FOUND;
     }
 
-    return  &this->influencers[position];
+    return  & this->influencers[position];
 }
 
 void Agency::addInfluencer(std::string infName, double commission){
-    
+
     try {
-        Influencer * inf = this->seachInfluencer(infName);
-        inf->setCommission(commission);
-        this->influencers.push_back(*inf);
+        seachInfluencer(infName);
+        // si sigue es que lo ha encontrado (es decir, está mal)
+        Util::error(ERR_DUPLICATED);
+        return;
 
     } catch (Exception e) {
+
         if (e == EXCEPTION_INFL_NOT_FOUND) {
-            Util::error(ERR_DUPLICATED);
-        }
-        if (e == EXCEPTION_WRONG_COMMISSION) {
-            Util::error(ERR_WRONG_COMMISSION);
+
+            Influencer inf(infName);
+            try {
+                inf.setCommission(commission);
+                this->influencers.push_back(inf);
+
+            } catch (Exception e) {
+                if (e == EXCEPTION_WRONG_COMMISSION) {
+                    Util::error(ERR_WRONG_COMMISSION);
+                }
+            }
         }
     }
 
@@ -50,11 +59,15 @@ void Agency::addInfluencer(std::string infName, double commission){
 void Agency::addFollowers(std::string infName, std::string snName, int nfollowers){
 
     try {
-        Influencer *i = this->seachInfluencer(infName);
+        Influencer *i = seachInfluencer(infName);
+        std::cout << "llego aqui"<<std::endl;
         i->addFollowers(snName, nfollowers);
+        std::cout << "llego aqui 2"<<std::endl;
 
     } catch (Exception e) {
+        std::cout << "llego aqui 3"<<std::endl;
         if (e == EXCEPTION_INFL_NOT_FOUND) {
+            std::cout << "llego aqui 4"<<std::endl;
             Util::error(ERR_NOT_FOUND);
             return;
         }
@@ -107,7 +120,6 @@ double Agency::collectCommissions(){
 
 std::string Agency::getName() const{
     return Agency::name;
-
 }
 
 double Agency::getMoney() const{
@@ -117,10 +129,8 @@ double Agency::getMoney() const{
 std::ostream& operator<<(std::ostream &os, const Agency &ag){
     os << "Agency: " <<ag.getName() << " ["<<ag.getMoney()<<"]"<<std::endl;
 
-    for (unsigned int i = 0; i<ag.influencers.size(); i++) {
+    for (unsigned int i = 0; i<ag.influencers.size(); i++) 
         os << ag.influencers[i];
-    
-    }
 
     return os;
 }
