@@ -4,6 +4,8 @@
 
 using namespace std;
 
+std::vector<struct SocialNetworkData> SNData::sns;
+
 void SNData::newSocialNetwork(string name, double avgR, double avgM){
     struct SocialNetworkData snd;
 

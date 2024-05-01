@@ -15,7 +15,7 @@ class Agency{
     std::vector<Influencer> influencers;
   public:
     Agency(std::string name, double initialMoney);
-    Influencer * seachInfluencer(std::string infName);
+    Influencer * searchInfluencer(std::string infName);
     void addInfluencer(std::string infName, double commission);
     void addFollowers(std::string infName, std::string snName, int nfollowers);
     void newEvent(std::vector<std::string> infNames, int nsns, std::string snNames[], double evtRatings[]);

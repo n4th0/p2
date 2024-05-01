@@ -11,7 +11,7 @@ Agency::Agency(std::string name, double initialMoney){
     this->money = initialMoney;
 }
 
-Influencer * Agency::seachInfluencer(std::string infName){
+Influencer * Agency::searchInfluencer(std::string infName){
 
     bool found = false;
     int position = 0;
@@ -32,7 +32,7 @@ Influencer * Agency::seachInfluencer(std::string infName){
 void Agency::addInfluencer(std::string infName, double commission){
 
     try {
-        seachInfluencer(infName);
+        searchInfluencer(infName);
         // si sigue es que lo ha encontrado (es decir, está mal)
         Util::error(ERR_DUPLICATED);
         return;
@@ -59,7 +59,7 @@ void Agency::addInfluencer(std::string infName, double commission){
 void Agency::addFollowers(std::string infName, std::string snName, int nfollowers){
 
     try {
-        Influencer *i = seachInfluencer(infName);
+        Influencer *i = searchInfluencer(infName);
         // std::cout << "llego aqui"<<std::endl;
         i->addFollowers(snName, nfollowers);
         // std::cout << "llego aqui 2"<<std::endl;
@@ -71,9 +71,7 @@ void Agency::addFollowers(std::string infName, std::string snName, int nfollower
             Util::error(ERR_NOT_FOUND);
             return;
         }
-
     }
-
 }
 
 void Agency::newEvent(std::vector<std::string> infNames, int nsns, std::string snNames[], double evtRatings[]){
@@ -82,7 +80,7 @@ void Agency::newEvent(std::vector<std::string> infNames, int nsns, std::string s
     for (unsigned int i = 0; i<infNames.size(); i++) {
 
         try {
-            inf = this->seachInfluencer(infNames[i]);
+            inf = this->searchInfluencer(infNames[i]);
             inf->addEvent(nsns, snNames, evtRatings);
         } catch (Exception e) {
             continue;
@@ -93,10 +91,19 @@ void Agency::newEvent(std::vector<std::string> infNames, int nsns, std::string s
 }
 
 void Agency::deleteInfluencer(std::string infName){
+    int indice;
 
     try {
-        Influencer *inf = this->seachInfluencer(infName);
-        this->money = this->money +inf->getCommission();
+        Influencer *inf = this->searchInfluencer(infName);
+        this->money = this->money + inf->collectCommission();
+
+        for (unsigned int i = 0; i<this->influencers.size(); i++) {
+            if (this->influencers[i].getName()== infName) {
+                indice = i;
+            }
+        }
+
+        this->influencers.erase(next(this->influencers.begin(), indice));
 
     } catch (Exception e) {
         if (e == EXCEPTION_INFL_NOT_FOUND) {
@@ -109,12 +116,11 @@ void Agency::deleteInfluencer(std::string infName){
 }
 
 double Agency::collectCommissions(){
-    // no se si tengo que poner las comisiones recolectadas a 0 (creo que no)
-
     double ret = 0.0;
     for (unsigned int i = 0; i<this->influencers.size(); i++) {
         ret = this->influencers[i].collectCommission() + ret;
     }
+    this->money = this->money + ret;
     return ret;
 
 }

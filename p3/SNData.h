@@ -20,5 +20,6 @@ class SNData{
     static double getAvgMonetizing(std::string name);
 };
 
+// std::vector<struct SocialNetworkData> SNData::sns;
 
 #endif

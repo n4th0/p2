@@ -17,6 +17,7 @@ SNFollowers::SNFollowers(std::string name, int initialFollowers){
 
     this->name = name;
     this->numFollowers = initialFollowers;
+    this->money = 0.0;
 }
 
 void SNFollowers::addFollowers(int nf){
@@ -30,6 +31,8 @@ void SNFollowers::addFollowers(int nf){
 
 void SNFollowers::addEvent(double rating){
     double relat;
+    int followersAdded;
+
     if (rating < 0) {
         throw invalid_argument(to_string(rating));
     }
@@ -37,9 +40,11 @@ void SNFollowers::addEvent(double rating){
     relat = rating/SNData::getAvgRating(this->name);
 
     if( relat > 0.8){ // 0.8 debería ser constante
-        this->addFollowers((int) this->numFollowers*relat);
+        
+        followersAdded = this->numFollowers*relat;
+        this->addFollowers(followersAdded);
 
-        this->money = this->money + ((int) this->numFollowers*relat);
+        this->money = SNData::getAvgMonetizing(this->name)*followersAdded + this->money;
 
     }else {
         this->addFollowers((int) this->numFollowers*(0.9 - relat));

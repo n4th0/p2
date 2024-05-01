@@ -7,8 +7,8 @@
 
 
 Influencer::Influencer(std::string name){
-    Influencer::name = name;
-    Influencer::commission = 0.1;
+    this->name = name;
+    this->commission = 0.1;
 }
 
 void Influencer::setCommission(double commission){
@@ -22,32 +22,32 @@ void Influencer::setCommission(double commission){
 }
 
 void Influencer::addFollowers(std::string snName, int nfollowers){
+    bool found = false;
+    int pos;
 
-    // std::cout <<"llego aqui fn1 1"<<std::endl;
+    for (unsigned int i = 0; i<this->followers.size(); i++) {
+        if (snName == this->followers[i].getName()) {
+            found = true;
+            pos = i;
+        }
+    }
 
-    if(!SNData::checkSN(snName)){
-
-        // std::cout <<"llego aqui fn1 2"<<std::endl;
+    if(!found){
         try {
             SNFollowers seguidores(snName, nfollowers);
 
-            // std::cout <<"llego aqui fn1 3"<<std::endl;
             this->followers.push_back(seguidores);
 
         } catch (Exception e) {
             if(e == EXCEPTION_UNKNOWN_SN){
-                // std::cout <<"llego aqui fn1 4"<<std::endl;
                 Util::error(ERR_UNKNOWN_SN);
                 return; // creo que esto no hace falta
             }
         }
 
     }else {
-        for (unsigned int i = 0; i<this->followers.size(); i++) {
-            if (snName == this->followers[i].getName()) {
-                followers[i].addFollowers(nfollowers);
-            }
-        }
+        this->followers[pos].addFollowers(nfollowers);
+
     }
 
 }
@@ -57,8 +57,7 @@ void Influencer::addEvent(int nsns, std::string sn[], double rat[]){
     for (unsigned int i = 0; i<this->followers.size(); i++) {
         for (int j = 0; j<nsns; j++) {
             if (sn[j] ==  this->followers[i].getName()) {
-                this->followers[i].addFollowers(rat[j]);
-
+                this->followers[i].addEvent(rat[j]);
             }
         }
     }
@@ -66,29 +65,28 @@ void Influencer::addEvent(int nsns, std::string sn[], double rat[]){
 }
 
 double Influencer::collectCommission(){
+
     double cant = 0;
     for (unsigned int i = 0; i < this->followers.size(); i++) {
         cant= cant + this->followers[i].collectCommission(this->commission);
     }
 
     return cant;
-
 }
 
 std::string Influencer::getName() const{
-    return Influencer::name;
+    return this->name;
 }
 
 std::vector<SNFollowers> Influencer::getFollowers() const{
-    return Influencer::followers;
+    return this->followers;
 }
 
 double Influencer::getCommission() const{
-    return Influencer::commission;
+    return this->commission;
 }
 
 std::ostream & operator<<(std::ostream &os, const Influencer &inf){
-
     os << "Influencer: "<< inf.getName() << " ("<< 
         inf.getCommission()<<")"<<std::endl;
 
