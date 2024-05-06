@@ -15,9 +15,7 @@ std::vector<struct SocialNetworkData> SNData::sns;
  * la excepción invalid_argument pasándole como argumento el valor incorrecto convertido a cadena
  * con to_string, por ejemplo con to_string(avgM)
  *
- *
  * */
-
 void SNData::newSocialNetwork(string name, double avgR, double avgM){
     struct SocialNetworkData snd;
 
