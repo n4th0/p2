@@ -93,6 +93,7 @@ std::ostream & operator<<(std::ostream &os, const Influencer &inf){
     for (unsigned int i = 0 ; i<inf.followers.size(); i++) {
         os << inf.followers[i];
     }
+    os << std::endl;
 
     return os;
 }
