@@ -71,7 +71,7 @@ void SNFollowers::addEvent(double rating){
         this->money = SNData::getAvgMonetizing(this->name)*followersAdded + this->money;
 
     }else {
-        this->addFollowers((int) this->numFollowers*(0.9 - relat));
+        this->addFollowers(-(int) this->numFollowers*(0.9 - relat));
     }
 }
 

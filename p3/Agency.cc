@@ -139,5 +139,6 @@ std::ostream& operator<<(std::ostream &os, const Agency &ag){
     for (unsigned int i = 0; i<ag.influencers.size(); i++) 
         os << ag.influencers[i];
 
+    os << std::endl;
     return os;
 }
