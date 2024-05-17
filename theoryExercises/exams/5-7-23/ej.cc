@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string>
 #include <string.h>
+
 using namespace std;
 #define B_FLAG "-b"
 #define S_FLAG "-s"
 
 // 1 = > error file 
 // 2 = > error arguments 
+// TODO hacer un enum para el switch
 void errores(int error){
 	switch(error){
 		case 1:
