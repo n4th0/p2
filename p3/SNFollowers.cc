@@ -87,7 +87,7 @@ void SNFollowers::addEvent(double rating){
 double SNFollowers::collectCommission(double commission){
     double a;
 
-    if (commission<0 || commission>1) {
+    if (commission<=0 || commission>=1) {
         throw invalid_argument(to_string(commission));
     }
 

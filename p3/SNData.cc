@@ -23,11 +23,11 @@ void SNData::newSocialNetwork(string name, double avgR, double avgM){
         throw invalid_argument(name);
     }
 
-    if ( avgR<0 || avgR>1 ) {
+    if ( avgR <= 0 || avgR >= 1 ) {
         throw invalid_argument(to_string(avgR));
     }
 
-    if ( avgM<0 || avgM>1 ) {
+    if ( avgM<=0 || avgM>=1 ) {
         throw invalid_argument(to_string(avgM));
     }
 
