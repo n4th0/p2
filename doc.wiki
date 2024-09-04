@@ -1,9 +1,9 @@
 
 = TODO LIST = 
     * [X] p0
-    * [ ] p1
-    * [ ] p2
-    * [ ] p3
+    * [X] p1
+    * [X] p2
+    * [X] p3
     * [X] theoryExercises
     * [X] sobrevivir
     
